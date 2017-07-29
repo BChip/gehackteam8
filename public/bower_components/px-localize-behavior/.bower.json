@@ -1,0 +1,46 @@
+{
+  "name": "px-localize-behavior",
+  "version": "0.0.3",
+  "main": [
+    "px-localize-behavior.html"
+  ],
+  "ignore": [
+    ".*",
+    "npm-debug.log",
+    "gulpfile.js",
+    "sass",
+    "bower_components",
+    "node_modules",
+    "test",
+    "OSS_Notice.pdf",
+    "scripts",
+    ".github",
+    "px-localize-behavior.png",
+    "LICENSE.md",
+    "CONTRIBUTING.md",
+    "HISTORY.md",
+    "README.md",
+    ".jshintrc",
+    ".editorconfig",
+    "*.enc"
+  ],
+  "dependencies": {
+    "polymer": "^1.7.1",
+    "app-localize-behavior": "^0.10.2"
+  },
+  "devDependencies": {
+    "px-theme": "^2.0.3",
+    "px-starter-kit-design": "^0.7.3",
+    "px-demo": "^1.3.2"
+  },
+  "homepage": "https://github.com/PredixDev/px-localize-behavior",
+  "_release": "0.0.3",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.3",
+    "commit": "eeef6955e65f445bc8d9194f7821013e4568f8bb"
+  },
+  "_source": "https://github.com/PredixDev/px-localize-behavior.git",
+  "_target": "^0.0.3",
+  "_originalSource": "px-localize-behavior"
+}

@@ -1,0 +1,436 @@
+/**
+ * @license
+ * Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+ * This code may only be used under the BSD style license found at
+ * http://polymer.github.io/LICENSE.txt
+ * The complete set of authors may be found at
+ * http://polymer.github.io/AUTHORS.txt
+ * The complete set of contributors may be found at
+ * http://polymer.github.io/CONTRIBUTORS.txt
+ * Code distributed by Google as part of the polymer project is also
+ * subject to an additional IP rights grant found at
+ * http://polymer.github.io/PATENTS.txt
+ */
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const astValue = require("../javascript/ast-value");
+const ast_value_1 = require("../javascript/ast-value");
+const esutil = require("../javascript/esutil");
+const jsdoc = require("../javascript/jsdoc");
+const model_1 = require("../model/model");
+const declaration_property_handlers_1 = require("./declaration-property-handlers");
+const js_utils_1 = require("./js-utils");
+const polymer_element_1 = require("./polymer-element");
+const polymer2_config_1 = require("./polymer2-config");
+class Polymer2ElementScanner {
+    scan(document, visit) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const visitor = new ElementVisitor(document);
+            yield visit(visitor);
+            return visitor.getRegisteredElements();
+        });
+    }
+}
+exports.Polymer2ElementScanner = Polymer2ElementScanner;
+class ElementVisitor {
+    constructor(document) {
+        this._possibleElements = new Map();
+        this._registeredButNotFound = new Map();
+        this._elements = new Set();
+        // TODO(rictic): write a WarningFeature. Emit them from this scanner.
+        this._warnings = [];
+        this._currentElement = null;
+        this._currentElementNode = null;
+        this._document = document;
+    }
+    enterClassExpression(node, parent) {
+        if (parent.type !== 'AssignmentExpression' &&
+            parent.type !== 'VariableDeclarator') {
+            return;
+        }
+        const className = astValue.getIdentifierName(parent.type === 'AssignmentExpression' ? parent.left : parent.id);
+        if (className == null) {
+            return;
+        }
+        const element = this._handleClass(node);
+        if (element) {
+            const nodeComments = esutil.getAttachedComment(node) || '';
+            const nodeJsDocs = jsdoc.parseJsdoc(nodeComments);
+            const namespacedClassName = ast_value_1.getNamespacedIdentifier(className, nodeJsDocs);
+            element.className = namespacedClassName;
+            const summaryTag = jsdoc.getTag(nodeJsDocs, 'summary');
+            element.summary = (summaryTag && summaryTag.description) || '';
+            // Set the element on both the namespaced & unnamespaced names so that we
+            // can detect registration by either name.
+            this._possibleElements.set(namespacedClassName, element);
+            this._possibleElements.set(className, element);
+        }
+    }
+    enterClassDeclaration(node) {
+        const element = this._handleClass(node);
+        if (element) {
+            const className = node.id.name;
+            const nodeComments = esutil.getAttachedComment(node) || '';
+            const nodeJsDocs = jsdoc.parseJsdoc(nodeComments);
+            const namespacedClassName = ast_value_1.getNamespacedIdentifier(className, nodeJsDocs);
+            element.className = namespacedClassName;
+            const summaryTag = jsdoc.getTag(nodeJsDocs, 'summary');
+            element.summary = (summaryTag && summaryTag.description) || '';
+            // Set the element on both the namespaced & unnamespaced names so that we
+            // can detect registration by either name.
+            this._possibleElements.set(className, element);
+            this._possibleElements.set(namespacedClassName, element);
+        }
+    }
+    enterVariableDeclaration(node, _parent) {
+        // This is for cases when a class is defined by only applying a mixin
+        // to a superclass, like: const Elem = Mixin(HTMLElement);
+        // In this case we don't have a ClassDeclaration or ClassExpresion
+        // to traverse into.
+        // TODO(justinfagnani): factor out more common code for creating
+        // an element from jsdocs.
+        const comment = esutil.getAttachedComment(node) || '';
+        const docs = jsdoc.parseJsdoc(comment);
+        const isElement = this._hasPolymerDocTag(docs);
+        const sourceRange = this._document.sourceRangeForNode(node);
+        if (isElement) {
+            const warnings = [];
+            const _extends = this._getExtends(node, docs, warnings);
+            const mixins = jsdoc.getMixins(this._document, node, docs, warnings);
+            // The name of the variable is available in a child VariableDeclarator
+            // so we save the element and node representing the element to access
+            // in enterVariableDeclarator
+            this._currentElementNode = node;
+            const className = astValue.getIdentifierName(node) || '';
+            const namespacedClassName = ast_value_1.getNamespacedIdentifier(className, docs);
+            const element = this._currentElement = new polymer_element_1.ScannedPolymerElement({
+                astNode: node,
+                sourceRange,
+                description: docs.description,
+                superClass: _extends,
+                mixins,
+                className: namespacedClassName,
+                privacy: js_utils_1.getOrInferPrivacy(namespacedClassName, docs, false)
+            });
+            this._elements.add(this._currentElement);
+            const summaryTag = jsdoc.getTag(docs, 'summary');
+            element.summary = (summaryTag && summaryTag.description) || '';
+            // Set the element on both the namespaced & unnamespaced names so that we
+            // can detect registration by either name.
+            this._possibleElements.set(namespacedClassName, element);
+            if (className) {
+                this._possibleElements.set(className, element);
+            }
+        }
+    }
+    leaveVariableDeclaration(node, _parent) {
+        if (this._currentElementNode === node) {
+            // Clean up state when we leave a declaration that defined an element.
+            this._currentElement = null;
+            this._currentElementNode = null;
+        }
+    }
+    enterVariableDeclarator(node, parent) {
+        if (this._currentElement != null && parent === this._currentElementNode) {
+            const name = node.id.name;
+            const parentComments = esutil.getAttachedComment(parent) || '';
+            const parentJsDocs = jsdoc.parseJsdoc(parentComments);
+            this._currentElement.className =
+                ast_value_1.getNamespacedIdentifier(name, parentJsDocs);
+        }
+    }
+    /**
+     * Returns the name of the superclass, if any.
+     */
+    _getExtends(node, docs, warnings) {
+        const extendsAnnotations = docs.tags.filter((tag) => tag.tag === 'extends');
+        // prefer @extends annotations over extends clauses
+        if (extendsAnnotations.length > 0) {
+            const extendsId = extendsAnnotations[0].name;
+            // TODO(justinfagnani): we need source ranges for jsdoc annotations
+            const sourceRange = this._document.sourceRangeForNode(node);
+            if (extendsId == null) {
+                warnings.push({
+                    code: 'class-extends-annotation-no-id',
+                    message: '@extends annotation with no identifier',
+                    severity: model_1.Severity.WARNING, sourceRange,
+                });
+            }
+            else {
+                return new model_1.ScannedReference(extendsId, sourceRange);
+            }
+        }
+        else if (node.type === 'ClassDeclaration' || node.type === 'ClassExpression') {
+            // If no @extends tag, look for a superclass.
+            // TODO(justinfagnani): Infer mixin applications and superclass from AST.
+            const superClass = node.superClass;
+            if (superClass != null) {
+                const extendsId = ast_value_1.getIdentifierName(superClass);
+                if (extendsId != null) {
+                    const sourceRange = this._document.sourceRangeForNode(superClass);
+                    return new model_1.ScannedReference(extendsId, sourceRange);
+                }
+            }
+        }
+    }
+    _handleClass(node) {
+        const comment = esutil.getAttachedComment(node) || '';
+        const docs = jsdoc.parseJsdoc(comment);
+        const isValue = polymer2_config_1.getIsValue(node);
+        let warnings = [];
+        const observersResult = this._getObservers(node);
+        let observers = [];
+        if (observersResult) {
+            observers = observersResult.observers;
+            warnings = warnings.concat(observersResult.warnings);
+        }
+        const className = node.id && node.id.name;
+        const element = new polymer_element_1.ScannedPolymerElement({
+            className,
+            astNode: node,
+            tagName: isValue,
+            description: (docs.description || '').trim(),
+            events: esutil.getEventComments(node),
+            sourceRange: this._document.sourceRangeForNode(node),
+            properties: polymer2_config_1.getProperties(node, this._document),
+            methods: polymer2_config_1.getMethods(node, this._document),
+            superClass: this._getExtends(node, docs, warnings),
+            mixins: jsdoc.getMixins(this._document, node, docs, warnings),
+            privacy: js_utils_1.getOrInferPrivacy(className || '', docs, false),
+            observers,
+        });
+        // If a class defines observedAttributes, it overrides what the base
+        // classes defined.
+        // TODO(justinfagnani): define and handle composition patterns.
+        const observedAttributes = this._getObservedAttributes(node);
+        if (observedAttributes != null) {
+            element.attributes = observedAttributes;
+        }
+        warnings.forEach((w) => element.warnings.push(w));
+        if (this._hasPolymerDocTag(docs)) {
+            this._elements.add(element);
+        }
+        return element;
+    }
+    enterCallExpression(node) {
+        const callee = astValue.getIdentifierName(node.callee);
+        if (!(callee === 'window.customElements.define' ||
+            callee === 'customElements.define')) {
+            return;
+        }
+        const tagNameExpressionResult = node.arguments[0] && this.getTagNameExpression(node.arguments[0]);
+        if (!tagNameExpressionResult.successful) {
+            this._warnings.push(tagNameExpressionResult.value);
+            return;
+        }
+        const tagNameExpression = tagNameExpressionResult.value;
+        if (tagNameExpression == null) {
+            return;
+        }
+        const elementDefn = node.arguments[1];
+        if (elementDefn == null) {
+            return;
+        }
+        const element = this._getElement(tagNameExpression, elementDefn);
+        if (!element) {
+            return;
+        }
+        this._elements.add(element);
+        const tagNameResult = this.getTagNameFromExpression(tagNameExpression);
+        if (tagNameResult.successful) {
+            element.tagName = tagNameResult.value;
+        }
+        else {
+            this._warnings.push(tagNameResult.value);
+        }
+    }
+    _getElement(tagName, elementDefn) {
+        const className = astValue.getIdentifierName(elementDefn);
+        if (className) {
+            const element = this._possibleElements.get(className);
+            if (element) {
+                this._possibleElements.delete(className);
+                return element;
+            }
+            else {
+                this._registeredButNotFound.set(className, tagName);
+                return null;
+            }
+        }
+        if (elementDefn.type === 'ClassExpression') {
+            return this._handleClass(elementDefn);
+        }
+        return null;
+    }
+    _hasPolymerDocTag(docs) {
+        const tags = docs.tags || [];
+        const elementTags = tags.filter((t) => t.tag === 'polymerElement');
+        return elementTags.length >= 1;
+    }
+    _getObservedAttributes(node) {
+        const returnedValue = this._getReturnValueOfStaticGetter(node, 'observedAttributes');
+        if (returnedValue && returnedValue.type === 'ArrayExpression') {
+            return this._extractAttributesFromObservedAttributes(returnedValue);
+        }
+    }
+    _getObservers(node) {
+        const returnedValue = this._getReturnValueOfStaticGetter(node, 'observers');
+        if (returnedValue) {
+            return declaration_property_handlers_1.extractObservers(returnedValue, this._document);
+        }
+    }
+    _getReturnValueOfStaticGetter(node, methodName) {
+        const observedAttributesDefn = node.body.body.find((m) => {
+            if (m.type !== 'MethodDefinition' || !m.static) {
+                return false;
+            }
+            return astValue.getIdentifierName(m.key) === methodName;
+        });
+        if (observedAttributesDefn) {
+            const body = observedAttributesDefn.value.body.body[0];
+            if (body && body.type === 'ReturnStatement' && body.argument) {
+                return body.argument;
+            }
+        }
+        return;
+    }
+    /**
+     * Extract attributes from the array expression inside a static
+     * observedAttributes method.
+     *
+     * e.g.
+     *     static get observedAttributes() {
+     *       return [
+     *         /** @type {boolean} When given the element is totally inactive *\/
+     *         'disabled',
+     *         /** @type {boolean} When given the element is expanded *\/
+     *         'open'
+     *       ];
+     *     }
+     */
+    _extractAttributesFromObservedAttributes(arry) {
+        const results = [];
+        for (const expr of arry.elements) {
+            const value = astValue.expressionToValue(expr);
+            if (value && typeof value === 'string') {
+                let description = '';
+                let type = null;
+                const comment = esutil.getAttachedComment(expr);
+                if (comment) {
+                    const annotation = jsdoc.parseJsdoc(comment);
+                    description = annotation.description || description;
+                    const tags = annotation.tags || [];
+                    for (const tag of tags) {
+                        if (tag.tag === 'type') {
+                            type = type || tag.type;
+                        }
+                        description = description || tag.description || '';
+                    }
+                }
+                const attribute = {
+                    name: value,
+                    description: description,
+                    sourceRange: this._document.sourceRangeForNode(expr),
+                    astNode: expr,
+                    warnings: [],
+                };
+                if (type) {
+                    attribute.type = type;
+                }
+                results.push(attribute);
+            }
+        }
+        return results;
+    }
+    /**
+     * Gets all found elements. Can only be called once.
+     */
+    getRegisteredElements() {
+        for (const classAndTag of this._registeredButNotFound.entries()) {
+            const className = classAndTag[0];
+            const tagNameExpression = classAndTag[1];
+            const element = this._possibleElements.get(className);
+            if (element) {
+                element.className = className;
+                const tagNameResult = this.getTagNameFromExpression(tagNameExpression);
+                if (tagNameResult.successful) {
+                    element.tagName = tagNameResult.value;
+                }
+                else {
+                    this._warnings.push(tagNameResult.value);
+                }
+                this._elements.add(element);
+            }
+        }
+        return Array.from(this._elements);
+    }
+    getTagNameFromExpression(expression) {
+        if (expression.type === 'string-literal') {
+            return { successful: true, value: expression.value };
+        }
+        const element = this._possibleElements.get(expression.className) ||
+            Array.from(this._elements)
+                .find((e) => e.className === expression.className);
+        if (!element) {
+            return { successful: false, value: {
+                    code: 'cant-determine-element-tagname',
+                    message: `Couldn't dereference the class name ${expression.className} here.`,
+                    severity: model_1.Severity.WARNING,
+                    sourceRange: expression.classNameSourceRange
+                }
+            };
+        }
+        return { successful: true, value: element.tagName };
+    }
+    getTagNameExpression(expression) {
+        const tryForLiteralString = astValue.expressionToValue(expression);
+        if (tryForLiteralString != null &&
+            typeof tryForLiteralString === 'string') {
+            return {
+                successful: true,
+                value: {
+                    type: 'string-literal',
+                    value: tryForLiteralString,
+                    sourceRange: this._document.sourceRangeForNode(expression)
+                }
+            };
+        }
+        if (expression.type === 'MemberExpression') {
+            // Might be something like MyElement.is
+            const isPropertyNameIs = (expression.property.type === 'Identifier' &&
+                expression.property.name === 'is') ||
+                (astValue.expressionToValue(expression.property) === 'is');
+            const className = astValue.getIdentifierName(expression.object);
+            if (isPropertyNameIs && className) {
+                return {
+                    successful: true,
+                    value: {
+                        type: 'is',
+                        className,
+                        classNameSourceRange: this._document.sourceRangeForNode(expression.object)
+                    }
+                };
+            }
+        }
+        return {
+            successful: false,
+            value: {
+                code: 'cant-determine-element-tagname',
+                message: `Unable to evaluate this expression down to a definitive string ` +
+                    `tagname.`,
+                severity: model_1.Severity.WARNING,
+                sourceRange: this._document.sourceRangeForNode(expression)
+            }
+        };
+    }
+}
+
+//# sourceMappingURL=polymer2-element-scanner.js.map

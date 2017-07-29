@@ -1,0 +1,392 @@
+[
+    {
+        "description": "Generates the CSS for small toggles if enabled.\n\n",
+        "commentRange": {
+            "start": 74,
+            "end": 77
+        },
+        "context": {
+            "type": "variable",
+            "name": "inuit-enable-toggle--small",
+            "value": "false",
+            "scope": "default",
+            "line": {
+                "start": 78,
+                "end": 78
+            }
+        },
+        "group": [
+            "px-toggle-design:variables:flag"
+        ],
+        "type": "Boolean [default]",
+        "access": "public",
+        "file": {
+            "path": "_objects.toggle.scss",
+            "name": "_objects.toggle.scss"
+        }
+    },
+    {
+        "description": "Generates the CSS for large toggles if enabled.\n\n",
+        "commentRange": {
+            "start": 80,
+            "end": 83
+        },
+        "context": {
+            "type": "variable",
+            "name": "inuit-enable-toggle--large",
+            "value": "false",
+            "scope": "default",
+            "line": {
+                "start": 84,
+                "end": 84
+            }
+        },
+        "group": [
+            "px-toggle-design:variables:flag"
+        ],
+        "type": "Boolean [default]",
+        "access": "public",
+        "file": {
+            "path": "_objects.toggle.scss",
+            "name": "_objects.toggle.scss"
+        }
+    },
+    {
+        "description": "Generates the CSS for huge toggles if enabled.\n\n",
+        "commentRange": {
+            "start": 86,
+            "end": 89
+        },
+        "context": {
+            "type": "variable",
+            "name": "inuit-enable-toggle--huge",
+            "value": "false",
+            "scope": "default",
+            "line": {
+                "start": 90,
+                "end": 90
+            }
+        },
+        "group": [
+            "px-toggle-design:variables:flag"
+        ],
+        "type": "Boolean [default]",
+        "access": "public",
+        "file": {
+            "path": "_objects.toggle.scss",
+            "name": "_objects.toggle.scss"
+        }
+    },
+    {
+        "description": "Generates the CSS for disabled toggles if enabled.\n\n",
+        "commentRange": {
+            "start": 92,
+            "end": 95
+        },
+        "context": {
+            "type": "variable",
+            "name": "inuit-enable-toggle--disabled",
+            "value": "false",
+            "scope": "default",
+            "line": {
+                "start": 96,
+                "end": 96
+            }
+        },
+        "group": [
+            "px-toggle-design:variables:flag"
+        ],
+        "type": "Boolean [default]",
+        "access": "public",
+        "file": {
+            "path": "_objects.toggle.scss",
+            "name": "_objects.toggle.scss"
+        }
+    },
+    {
+        "description": "Sets a prepended namespace for all generated classes.\n\n",
+        "commentRange": {
+            "start": 11,
+            "end": 14
+        },
+        "context": {
+            "type": "variable",
+            "name": "inuit-toggle-namespace",
+            "value": "$inuit-namespace",
+            "scope": "default",
+            "line": {
+                "start": 15,
+                "end": 15
+            }
+        },
+        "group": [
+            "px-toggle-design:variables:style"
+        ],
+        "type": "String [default]",
+        "access": "public",
+        "file": {
+            "path": "_objects.toggle.scss",
+            "name": "_objects.toggle.scss"
+        }
+    },
+    {
+        "description": "Sets the toggle switch color.\n\n",
+        "commentRange": {
+            "start": 17,
+            "end": 20
+        },
+        "context": {
+            "type": "variable",
+            "name": "inuit-toggle-switch",
+            "value": "var(--px-toggle-switch-color, $white)",
+            "scope": "default",
+            "line": {
+                "start": 21,
+                "end": 21
+            }
+        },
+        "group": [
+            "px-toggle-design:variables:style"
+        ],
+        "type": "Color [default]",
+        "access": "public",
+        "file": {
+            "path": "_objects.toggle.scss",
+            "name": "_objects.toggle.scss"
+        }
+    },
+    {
+        "description": "Sets the toggle switch border color.\n\n",
+        "commentRange": {
+            "start": 23,
+            "end": 26
+        },
+        "context": {
+            "type": "variable",
+            "name": "inuit-toggle-switch-border",
+            "value": "var(--px-toggle-switch-border-color, $gray2)",
+            "scope": "default",
+            "line": {
+                "start": 27,
+                "end": 27
+            }
+        },
+        "group": [
+            "px-toggle-design:variables:style"
+        ],
+        "type": "Color [default]",
+        "access": "public",
+        "file": {
+            "path": "_objects.toggle.scss",
+            "name": "_objects.toggle.scss"
+        }
+    },
+    {
+        "description": "Sets the toggle switch shadow color.\n\n",
+        "commentRange": {
+            "start": 29,
+            "end": 32
+        },
+        "context": {
+            "type": "variable",
+            "name": "inuit-toggle-switch-shadow",
+            "value": "0px 1px 0px var(--px-toggle-switch-shadow-color, rgba($black, .15))",
+            "scope": "default",
+            "line": {
+                "start": 33,
+                "end": 33
+            }
+        },
+        "group": [
+            "px-toggle-design:variables:style"
+        ],
+        "type": "Color | String [default]",
+        "access": "public",
+        "file": {
+            "path": "_objects.toggle.scss",
+            "name": "_objects.toggle.scss"
+        }
+    },
+    {
+        "description": "Sets the toggle background color. This color is in use when the toggle is off/deactivated.\n\n",
+        "commentRange": {
+            "start": 35,
+            "end": 38
+        },
+        "context": {
+            "type": "variable",
+            "name": "inuit-toggle-background",
+            "value": "var(--px-toggle-backgound-color--off, $gray4)",
+            "scope": "default",
+            "line": {
+                "start": 39,
+                "end": 39
+            }
+        },
+        "group": [
+            "px-toggle-design:variables:style"
+        ],
+        "type": "Color [default]",
+        "access": "public",
+        "file": {
+            "path": "_objects.toggle.scss",
+            "name": "_objects.toggle.scss"
+        }
+    },
+    {
+        "description": "Sets the toggle border color. This color is in use when the toggle is off/deactivated.\n\n",
+        "commentRange": {
+            "start": 41,
+            "end": 44
+        },
+        "context": {
+            "type": "variable",
+            "name": "inuit-toggle-border",
+            "value": "var(--px-toggle-border-color--off, $gray5)",
+            "scope": "default",
+            "line": {
+                "start": 45,
+                "end": 45
+            }
+        },
+        "group": [
+            "px-toggle-design:variables:style"
+        ],
+        "type": "Color [default]",
+        "access": "public",
+        "file": {
+            "path": "_objects.toggle.scss",
+            "name": "_objects.toggle.scss"
+        }
+    },
+    {
+        "description": "Sets the toggle background color. This color is in use when the toggle is on/activated.\n\n",
+        "commentRange": {
+            "start": 47,
+            "end": 50
+        },
+        "context": {
+            "type": "variable",
+            "name": "inuit-toggle-background--on",
+            "value": "var(--px-toggle-background-color--on, $select-blue-default)",
+            "scope": "default",
+            "line": {
+                "start": 51,
+                "end": 51
+            }
+        },
+        "group": [
+            "px-toggle-design:variables:style"
+        ],
+        "type": "Color [default]]",
+        "access": "public",
+        "file": {
+            "path": "_objects.toggle.scss",
+            "name": "_objects.toggle.scss"
+        }
+    },
+    {
+        "description": "Sets the toggle border color. This color is in use when the toggle is on/activated.\n\n",
+        "commentRange": {
+            "start": 53,
+            "end": 56
+        },
+        "context": {
+            "type": "variable",
+            "name": "inuit-toggle-border--on",
+            "value": "var(--px-toggle-border-color--on, $select-blue-hover)",
+            "scope": "default",
+            "line": {
+                "start": 57,
+                "end": 57
+            }
+        },
+        "group": [
+            "px-toggle-design:variables:style"
+        ],
+        "type": "Color [default]]",
+        "access": "public",
+        "file": {
+            "path": "_objects.toggle.scss",
+            "name": "_objects.toggle.scss"
+        }
+    },
+    {
+        "description": "Disabled background color\n",
+        "commentRange": {
+            "start": 59,
+            "end": 61
+        },
+        "context": {
+            "type": "variable",
+            "name": "inuit-toggle-disabled-background",
+            "value": "$white",
+            "scope": "default",
+            "line": {
+                "start": 62,
+                "end": 62
+            }
+        },
+        "group": [
+            "px-toggle-design:variables:style"
+        ],
+        "type": "Color [default]",
+        "access": "public",
+        "file": {
+            "path": "_objects.toggle.scss",
+            "name": "_objects.toggle.scss"
+        }
+    },
+    {
+        "description": "Disabled checked background color\n",
+        "commentRange": {
+            "start": 64,
+            "end": 66
+        },
+        "context": {
+            "type": "variable",
+            "name": "inuit-toggle-checked-disabled-background",
+            "value": "$gray4",
+            "scope": "default",
+            "line": {
+                "start": 67,
+                "end": 67
+            }
+        },
+        "group": [
+            "px-toggle-design:variables:style"
+        ],
+        "type": "Color [default]",
+        "access": "public",
+        "file": {
+            "path": "_objects.toggle.scss",
+            "name": "_objects.toggle.scss"
+        }
+    },
+    {
+        "description": "Disabled border color\n",
+        "commentRange": {
+            "start": 69,
+            "end": 71
+        },
+        "context": {
+            "type": "variable",
+            "name": "inuit-toggle-disabled-border-color",
+            "value": "$gray4",
+            "scope": "default",
+            "line": {
+                "start": 72,
+                "end": 72
+            }
+        },
+        "group": [
+            "px-toggle-design:variables:style"
+        ],
+        "type": "Color [default]",
+        "access": "public",
+        "file": {
+            "path": "_objects.toggle.scss",
+            "name": "_objects.toggle.scss"
+        }
+    }
+]

@@ -1,0 +1,216 @@
+/**
+ * @license
+ * Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+ * This code may only be used under the BSD style license found at
+ * http://polymer.github.io/LICENSE.txt
+ * The complete set of authors may be found at
+ * http://polymer.github.io/AUTHORS.txt
+ * The complete set of contributors may be found at
+ * http://polymer.github.io/CONTRIBUTORS.txt
+ * Code distributed by Google as part of the polymer project is also
+ * subject to an additional IP rights grant found at
+ * http://polymer.github.io/PATENTS.txt
+ */
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const doctrine = require("doctrine");
+const model_1 = require("../model/model");
+/**
+ * doctrine configuration,
+ * CURRENTLY UNUSED BECAUSE PRIVATE
+ */
+// function configureDoctrine() {
+//   // @hero [path/to/image]
+//   doctrine.Rules['hero'] = ['parseNamePathOptional', 'ensureEnd'];
+//   // // @demo [path/to/demo] [Demo title]
+//   doctrine.Rules['demo'] = ['parseNamePathOptional', 'parseDescription',
+//   'ensureEnd'];
+//   // // @polymerBehavior [Polymer.BehaviorName]
+//   doctrine.Rules['polymerBehavior'] = ['parseNamePathOptional', 'ensureEnd'];
+// }
+// configureDoctrine();
+// @demo [path] [title]
+function parseDemo(tag) {
+    const match = (tag.description || '').match(/^\s*(\S*)\s*(.*)$/);
+    return {
+        tag: 'demo',
+        type: null,
+        name: match ? match[1] : null,
+        description: match ? match[2] : null
+    };
+}
+// @hero [path]
+function parseHero(tag) {
+    return { tag: tag.title, type: null, name: tag.description, description: null };
+}
+// @polymerElement
+function parsePolymerElement(tag) {
+    return { tag: tag.title, type: null, name: tag.description, description: null };
+}
+// @polymerMixin [name]
+function parsePolymerMixin(tag) {
+    return { tag: tag.title, type: null, name: tag.description, description: null };
+}
+// @polymerMixinClass [name]
+function parsePolymerMixinClass(tag) {
+    return { tag: tag.title, type: null, name: tag.description, description: null };
+}
+// @polymerBehavior [name]
+function parsePolymerBehavior(tag) {
+    return { tag: tag.title, type: null, name: tag.description, description: null };
+}
+// @pseudoElement name
+function parsePseudoElement(tag) {
+    return { tag: tag.title, type: null, name: tag.description, description: null };
+}
+const CUSTOM_TAGS = {
+    demo: parseDemo,
+    hero: parseHero,
+    polymerBehavior: parsePolymerBehavior,
+    polymerElement: parsePolymerElement,
+    polymerMixin: parsePolymerMixin,
+    polymerMixinClass: parsePolymerMixinClass,
+    pseudoElement: parsePseudoElement,
+};
+/**
+ * Convert doctrine tags to our tag format
+ */
+function _tagsToHydroTags(tags) {
+    if (!tags)
+        return null;
+    return tags.map(function (tag) {
+        if (tag.title in CUSTOM_TAGS) {
+            return CUSTOM_TAGS[tag.title](tag);
+        }
+        else {
+            return {
+                tag: tag.title,
+                type: tag.type ? doctrine.type.stringify(tag.type) : null,
+                name: tag.name == null ? null : tag.name,
+                description: tag.description
+            };
+        }
+    });
+}
+/**
+ * removes leading *, and any space before it
+ */
+function removeLeadingAsterisks(description) {
+    if ((typeof description) !== 'string')
+        return description;
+    return description.split('\n')
+        .map(function (line) {
+        // remove leading '\s*' from each line
+        const match = line.match(/^[\s]*\*\s?(.*)$/);
+        return match ? match[1] : line;
+    })
+        .join('\n');
+}
+exports.removeLeadingAsterisks = removeLeadingAsterisks;
+/**
+ * Given a JSDoc string (minus opening/closing comment delimiters), extract its
+ * description and tags.
+ */
+function parseJsdoc(docs) {
+    docs = removeLeadingAsterisks(docs);
+    const d = doctrine.parse(docs, { unwrap: false, lineNumbers: true, preserveWhitespace: true });
+    // Strip any leading and trailing newline characters in the
+    // description of multiline comments for readibility.
+    // TODO(rictic): figure out if we can trim() here or not. Something something
+    //     markdown?
+    const description = d.description && d.description.replace(/^\n+|\n+$/g, '');
+    return { description: description, tags: _tagsToHydroTags(d.tags) };
+}
+exports.parseJsdoc = parseJsdoc;
+// Utility
+function hasTag(jsdoc, tagName) {
+    if (!jsdoc || !jsdoc.tags)
+        return false;
+    return jsdoc.tags.some(function (tag) {
+        return tag.tag === tagName;
+    });
+}
+exports.hasTag = hasTag;
+function getTag(jsdoc, tagName, key) {
+    if (!jsdoc || !jsdoc.tags)
+        return null;
+    for (let i = 0; i < jsdoc.tags.length; i++) {
+        const tag = jsdoc.tags[i];
+        if (tag.tag === tagName) {
+            return key ? tag[key] : tag;
+        }
+    }
+    return null;
+}
+exports.getTag = getTag;
+function unindent(text) {
+    if (!text)
+        return text;
+    const lines = text.replace(/\t/g, '  ').split('\n');
+    const indent = lines.reduce(function (prev, line) {
+        if (/^\s*$/.test(line))
+            return prev; // Completely ignore blank lines.
+        const lineIndent = line.match(/^(\s*)/)[0].length;
+        if (prev === null)
+            return lineIndent;
+        return lineIndent < prev ? lineIndent : prev;
+    }, 0);
+    return lines
+        .map(function (l) {
+        return l.substr(indent);
+    })
+        .join('\n');
+}
+exports.unindent = unindent;
+function isAnnotationEmpty(docs) {
+    if (!docs) {
+        return false;
+    }
+    const hasNoTags = !docs.tags || docs.tags.length === 0;
+    return docs.description.trim() === '' && hasNoTags;
+}
+exports.isAnnotationEmpty = isAnnotationEmpty;
+function isPrivacy(maybePrivacy) {
+    switch (maybePrivacy) {
+        case 'public':
+        case 'private':
+        case 'protected':
+            return true;
+    }
+    return false;
+}
+function getPrivacy(jsdoc) {
+    if (!jsdoc || !jsdoc.tags) {
+        return null;
+    }
+    for (const tag of jsdoc.tags) {
+        if (isPrivacy(tag.tag)) {
+            return tag.tag;
+        }
+    }
+    return null;
+}
+exports.getPrivacy = getPrivacy;
+function getMixins(document, node, docs, warnings) {
+    const mixesAnnotations = docs.tags.filter((tag) => tag.tag === 'mixes');
+    return mixesAnnotations
+        .map((annotation) => {
+        const mixinId = annotation.name;
+        // TODO(justinfagnani): we need source ranges for jsdoc
+        // annotations
+        const sourceRange = document.sourceRangeForNode(node);
+        if (mixinId == null) {
+            warnings.push({
+                code: 'class-mixes-annotation-no-id',
+                message: '@mixes annotation with no identifier. Usage `@mixes MixinName`',
+                severity: model_1.Severity.WARNING, sourceRange,
+            });
+            return;
+        }
+        return new model_1.ScannedReference(mixinId, sourceRange);
+    })
+        .filter((m) => m != null);
+}
+exports.getMixins = getMixins;
+
+//# sourceMappingURL=jsdoc.js.map

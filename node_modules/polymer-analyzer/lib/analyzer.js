@@ -1,0 +1,119 @@
+/**
+ * @license
+ * Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+ * This code may only be used under the BSD style license found at
+ * http://polymer.github.io/LICENSE.txt
+ * The complete set of authors may be found at
+ * http://polymer.github.io/AUTHORS.txt
+ * The complete set of contributors may be found at
+ * http://polymer.github.io/CONTRIBUTORS.txt
+ * Code distributed by Google as part of the polymer project is also
+ * subject to an additional IP rights grant found at
+ * http://polymer.github.io/PATENTS.txt
+ */
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+/// <reference path="../custom_typings/main.d.ts" />
+const analysis_context_1 = require("./core/analysis-context");
+class NoKnownParserError extends Error {
+}
+exports.NoKnownParserError = NoKnownParserError;
+;
+/**
+ * A static analyzer for web projects.
+ *
+ * An Analyzer can load and parse documents of various types, and extract
+ * arbitrary information from the documents, and transitively load
+ * dependencies. An Analyzer instance is configured with parsers, and scanners
+ * which do the actual work of understanding different file types.
+ */
+class Analyzer {
+    constructor(options) {
+        if (options instanceof analysis_context_1.AnalysisContext) {
+            this._context = options;
+        }
+        else {
+            this._context = new analysis_context_1.AnalysisContext(options);
+        }
+    }
+    /**
+     * Loads, parses and analyzes the root document of a dependency graph and its
+     * transitive dependencies.
+     *
+     * Note: The analyzer only supports analyzing a single root for now. This
+     * is because each analyzed document in the dependency graph has a single
+     * root. This mean that we can't properly analyze app-shell-style, lazy
+     * loading apps.
+     *
+     * @param contents Optional contents of the file when it is known without
+     * reading it from disk. Clears the caches so that the news contents is used
+     * and reanalyzed. Useful for editors that want to re-analyze changed files.
+     */
+    analyze(url, contents) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (contents != null) {
+                this._context = this._context.filesChanged([url]);
+            }
+            return this._context.analyze(url, contents);
+        });
+    }
+    analyzePackage() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this._context.analyzePackage();
+        });
+    }
+    /**
+     * Clear all cached information from this analyzer instance.
+     *
+     * Note: if at all possible, instead tell the analyzer about the specific
+     * files that changed rather than clearing caches like this. Caching provides
+     * large performance gains.
+     */
+    clearCaches() {
+        this._context = this._context.clearCaches();
+    }
+    /**
+     * Returns a copy of the analyzer.  If options are given, the AnalysisContext
+     * is also forked and individual properties are overridden by the options.
+     * is forked with the given options.
+     *
+     * When the analysis context is forked, its cache is preserved, so you will
+     * see a mixture of pre-fork and post-fork contents when you analyze with a
+     * forked analyzer.
+     *
+     * Note: this feature is experimental.
+     */
+    _fork(options) {
+        const context = options ? this._context._fork(undefined, options) : this._context;
+        return new Analyzer(context);
+    }
+    /**
+     * Loads the content at the provided resolved URL.
+     *
+     * Currently does no caching. If the provided contents are given then they
+     * are used instead of hitting the UrlLoader (e.g. when you have in-memory
+     * contents that should override disk).
+     */
+    load(resolvedUrl, providedContents) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this._context.load(resolvedUrl, providedContents);
+        });
+    }
+    canResolveUrl(url) {
+        return this._context.canResolveUrl(url);
+    }
+    resolveUrl(url) {
+        return this._context.resolveUrl(url);
+    }
+}
+exports.Analyzer = Analyzer;
+
+//# sourceMappingURL=analyzer.js.map

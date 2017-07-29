@@ -1,0 +1,312 @@
+[
+    {
+        "description": "Default table\n",
+        "commentRange": {
+            "start": 66,
+            "end": 66
+        },
+        "context": {
+            "type": "css",
+            "name": ".#{$inuit-table-namespace}table,\n%#{$inuit-table-namespace}table",
+            "value": "width: 100%;\n  border-collapse: collapse;\n  border-spacing: 0;\n  th,\n  td {\n      border: $inuit-table-border-width $inuit-table-border-style $inuit-table-border-color;\n      padding: $inuit-base-spacing-unit--small;\n  }\n  th {\n    text-align: $inuit-table-header-text-align;\n  }",
+            "line": {
+                "start": 68,
+                "end": 163
+            }
+        },
+        "group": [
+            "px-tables-design"
+        ],
+        "access": "public",
+        "file": {
+            "path": "_base.tables.scss",
+            "name": "_base.tables.scss"
+        }
+    },
+    {
+        "description": "Enable tables with fixed width columns?\n",
+        "commentRange": {
+            "start": 30,
+            "end": 32
+        },
+        "context": {
+            "type": "variable",
+            "name": "inuit-enable-table--fixed",
+            "value": "false",
+            "scope": "default",
+            "line": {
+                "start": 33,
+                "end": 33
+            }
+        },
+        "group": [
+            "px-tables-design:variables:flag"
+        ],
+        "type": "Boolean [default]",
+        "access": "public",
+        "file": {
+            "path": "_base.tables.scss",
+            "name": "_base.tables.scss"
+        }
+    },
+    {
+        "description": "Enable tables with small cell padding?\n",
+        "commentRange": {
+            "start": 35,
+            "end": 37
+        },
+        "context": {
+            "type": "variable",
+            "name": "inuit-enable-table--small",
+            "value": "false",
+            "scope": "default",
+            "line": {
+                "start": 38,
+                "end": 38
+            }
+        },
+        "group": [
+            "px-tables-design:variables:flag"
+        ],
+        "type": "Boolean [default]",
+        "access": "public",
+        "file": {
+            "path": "_base.tables.scss",
+            "name": "_base.tables.scss"
+        }
+    },
+    {
+        "description": "Enable tables with large cell padding?\n",
+        "commentRange": {
+            "start": 40,
+            "end": 42
+        },
+        "context": {
+            "type": "variable",
+            "name": "inuit-enable-table--large",
+            "value": "false",
+            "scope": "default",
+            "line": {
+                "start": 43,
+                "end": 43
+            }
+        },
+        "group": [
+            "px-tables-design:variables:flag"
+        ],
+        "type": "Boolean [default]",
+        "access": "public",
+        "file": {
+            "path": "_base.tables.scss",
+            "name": "_base.tables.scss"
+        }
+    },
+    {
+        "description": "Enable tables with no borders?\n",
+        "commentRange": {
+            "start": 45,
+            "end": 47
+        },
+        "context": {
+            "type": "variable",
+            "name": "inuit-enable-table--no-cells",
+            "value": "false",
+            "scope": "default",
+            "line": {
+                "start": 48,
+                "end": 48
+            }
+        },
+        "group": [
+            "px-tables-design:variables:flag"
+        ],
+        "type": "Boolean [default]",
+        "access": "public",
+        "file": {
+            "path": "_base.tables.scss",
+            "name": "_base.tables.scss"
+        }
+    },
+    {
+        "description": "Enable tables with row borders but no column borders?\n",
+        "commentRange": {
+            "start": 50,
+            "end": 52
+        },
+        "context": {
+            "type": "variable",
+            "name": "inuit-enable-table--rows",
+            "value": "false",
+            "scope": "default",
+            "line": {
+                "start": 53,
+                "end": 53
+            }
+        },
+        "group": [
+            "px-tables-design:variables:flag"
+        ],
+        "type": "Boolean [default]",
+        "access": "public",
+        "file": {
+            "path": "_base.tables.scss",
+            "name": "_base.tables.scss"
+        }
+    },
+    {
+        "description": "Enable tables with column borders but no row borders?\n",
+        "commentRange": {
+            "start": 55,
+            "end": 57
+        },
+        "context": {
+            "type": "variable",
+            "name": "inuit-enable-table--columns",
+            "value": "false",
+            "scope": "default",
+            "line": {
+                "start": 58,
+                "end": 58
+            }
+        },
+        "group": [
+            "px-tables-design:variables:flag"
+        ],
+        "type": "Boolean [default]",
+        "access": "public",
+        "file": {
+            "path": "_base.tables.scss",
+            "name": "_base.tables.scss"
+        }
+    },
+    {
+        "description": "Prepend value for all generated classes\n",
+        "commentRange": {
+            "start": 10,
+            "end": 12
+        },
+        "context": {
+            "type": "variable",
+            "name": "inuit-table-namespace",
+            "value": "$inuit-namespace",
+            "scope": "default",
+            "line": {
+                "start": 13,
+                "end": 13
+            }
+        },
+        "group": [
+            "px-tables-design:variables:style"
+        ],
+        "type": "String [default]",
+        "access": "public",
+        "file": {
+            "path": "_base.tables.scss",
+            "name": "_base.tables.scss"
+        }
+    },
+    {
+        "description": "Border width\n",
+        "commentRange": {
+            "start": 15,
+            "end": 17
+        },
+        "context": {
+            "type": "variable",
+            "name": "inuit-table-border-width",
+            "value": "1px",
+            "scope": "default",
+            "line": {
+                "start": 18,
+                "end": 18
+            }
+        },
+        "group": [
+            "px-tables-design:variables:style"
+        ],
+        "type": "Number [default]",
+        "access": "public",
+        "file": {
+            "path": "_base.tables.scss",
+            "name": "_base.tables.scss"
+        }
+    },
+    {
+        "description": "Border style\n",
+        "commentRange": {
+            "start": 20,
+            "end": 22
+        },
+        "context": {
+            "type": "variable",
+            "name": "inuit-table-border-style",
+            "value": "solid",
+            "scope": "default",
+            "line": {
+                "start": 23,
+                "end": 23
+            }
+        },
+        "group": [
+            "px-tables-design:variables:style"
+        ],
+        "type": "String [default]",
+        "access": "public",
+        "file": {
+            "path": "_base.tables.scss",
+            "name": "_base.tables.scss"
+        }
+    },
+    {
+        "description": "Border color\n",
+        "commentRange": {
+            "start": 25,
+            "end": 27
+        },
+        "context": {
+            "type": "variable",
+            "name": "inuit-table-border-color",
+            "value": "var(--px-table-border-color, $gray4)",
+            "scope": "default",
+            "line": {
+                "start": 28,
+                "end": 28
+            }
+        },
+        "group": [
+            "px-tables-design:variables:style"
+        ],
+        "type": "Color [default]",
+        "access": "public",
+        "file": {
+            "path": "_base.tables.scss",
+            "name": "_base.tables.scss"
+        }
+    },
+    {
+        "description": "Enable tables with text alignment in headers\n",
+        "commentRange": {
+            "start": 61,
+            "end": 63
+        },
+        "context": {
+            "type": "variable",
+            "name": "inuit-table-header-text-align",
+            "value": "left",
+            "scope": "default",
+            "line": {
+                "start": 64,
+                "end": 64
+            }
+        },
+        "group": [
+            "px-tables-design:variables:style"
+        ],
+        "type": "String [default]",
+        "access": "public",
+        "file": {
+            "path": "_base.tables.scss",
+            "name": "_base.tables.scss"
+        }
+    }
+]

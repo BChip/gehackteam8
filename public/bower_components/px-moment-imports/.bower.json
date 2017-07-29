@@ -1,0 +1,40 @@
+{
+  "name": "px-moment-imports",
+  "version": "0.0.1",
+  "main": [
+    "px-moment-imports.html"
+  ],
+  "ignore": [
+    ".*",
+    "npm-debug.log",
+    "gulpfile.js",
+    "sass",
+    "bower_components",
+    "node_modules",
+    "test",
+    "OSS_Notice.pdf",
+    "scripts",
+    ".github",
+    "px-moment-imports.png",
+    "LICENSE.md",
+    "CONTRIBUTING.md",
+    "HISTORY.md",
+    "README.md",
+    ".jshintrc",
+    ".editorconfig",
+    "*.enc"
+  ],
+  "dependencies": {
+    "pxmoment-timezone": "moment-timezone#~0.5.3"
+  },
+  "homepage": "https://github.com/PredixDev/px-moment-imports",
+  "_release": "0.0.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.1",
+    "commit": "88d63dcb88ba85bac46ee53f690cd2f5da9ddb97"
+  },
+  "_source": "https://github.com/PredixDev/px-moment-imports.git",
+  "_target": "^0.0.1",
+  "_originalSource": "px-moment-imports"
+}

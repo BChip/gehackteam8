@@ -1,0 +1,44 @@
+import * as estree from 'estree';
+import { JavaScriptDocument } from '../javascript/javascript-document';
+import { Privacy } from '../model/model';
+import { ScannedReference, Warning } from '../model/model';
+/**
+ * An annotated JSDoc block tag, all fields are optionally processed except for
+ * the tag:
+ *
+ *     @TAG {TYPE} NAME DESC
+ */
+export interface Tag {
+    tag: string;
+    type: string | null;
+    name: string | null;
+    description: string | null;
+}
+/**
+ * The parsed representation of a JSDoc comment.
+ */
+export interface Annotation {
+    description: string;
+    tags: Tag[] | null;
+}
+/**
+ * removes leading *, and any space before it
+ */
+export declare function removeLeadingAsterisks(description: string): string;
+/**
+ * Given a JSDoc string (minus opening/closing comment delimiters), extract its
+ * description and tags.
+ */
+export declare function parseJsdoc(docs: string): Annotation;
+export declare function hasTag(jsdoc: Annotation | null | undefined, tagName: string): boolean;
+/**
+ * Finds the first JSDoc tag matching `name` and returns its value at `key`.
+ *
+ * If `key` is omitted, the entire tag object is returned.
+ */
+export declare function getTag(jsdoc: Annotation | null | undefined, tagName: string): (Tag | null);
+export declare function getTag(jsdoc: Annotation | null | undefined, tagName: string, key: string): (string | null);
+export declare function unindent(text: string): string;
+export declare function isAnnotationEmpty(docs?: Annotation): boolean;
+export declare function getPrivacy(jsdoc: Annotation | null | undefined): Privacy | null;
+export declare function getMixins(document: JavaScriptDocument, node: estree.Node, docs: Annotation, warnings: Warning[]): ScannedReference[];

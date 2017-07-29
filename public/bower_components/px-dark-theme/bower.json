@@ -1,0 +1,24 @@
+{
+  "name": "px-dark-theme",
+  "version": "1.0.10",
+  "main": [
+    "px-dark-theme.html"
+  ],
+  "ignore": [
+    "**/.*",
+    "npm-debug.log",
+    "Gruntfile.js",
+    "*.md",
+    "sass",
+    "bower_components",
+    "node_modules",
+    "test",
+    "OSS_Notice.pdf"
+  ],
+  "dependencies": {
+    "polymer": "^1.7.0",
+    "px-typography-design": "^1.1.3",
+    "px-iconography-design": "^0.3.7",
+    "px-colors-design": "^0.3.2"
+  }
+}

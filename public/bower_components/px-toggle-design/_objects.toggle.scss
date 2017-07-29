@@ -1,0 +1,314 @@
+////
+/// PX-TOGGLE-DESIGN
+/// Defines simple toggle objects
+/// @group px-toggle-design
+////
+
+@import 'px-defaults-design/_settings.defaults.scss';
+@import 'px-colors-design/_settings.colors.scss';
+@import 'px-helpers-design/_generic.helpers.scss';
+
+/// Sets a prepended namespace for all generated classes.
+///
+/// @group px-toggle-design:variables:style
+/// @type String [default]
+$inuit-toggle-namespace         : $inuit-namespace !default;
+
+/// Sets the toggle switch color.
+///
+/// @group px-toggle-design:variables:style
+/// @type Color [default]
+$inuit-toggle-switch            : var(--px-toggle-switch-color, $white) !default;
+
+/// Sets the toggle switch border color.
+///
+/// @group px-toggle-design:variables:style
+/// @type Color [default]
+$inuit-toggle-switch-border     : var(--px-toggle-switch-border-color, $gray2) !default;
+
+/// Sets the toggle switch shadow color.
+///
+/// @group px-toggle-design:variables:style
+/// @type Color | String [default]
+$inuit-toggle-switch-shadow     : 0px 1px 0px var(--px-toggle-switch-shadow-color, rgba($black, .15)) !default;
+
+/// Sets the toggle background color. This color is in use when the toggle is off/deactivated.
+///
+/// @group px-toggle-design:variables:style
+/// @type Color [default]
+$inuit-toggle-background        : var(--px-toggle-backgound-color--off, $gray4) !default;
+
+/// Sets the toggle border color. This color is in use when the toggle is off/deactivated.
+///
+/// @group px-toggle-design:variables:style
+/// @type Color [default]
+$inuit-toggle-border            : var(--px-toggle-border-color--off, $gray4) !default;
+
+/// Sets the toggle background color. This color is in use when the toggle is on/activated.
+///
+/// @group px-toggle-design:variables:style
+/// @type Color [default]]
+$inuit-toggle-background--on    : var(--px-toggle-background-color--on, $select-blue-default) !default;
+
+/// Sets the toggle border color. This color is in use when the toggle is on/activated.
+///
+/// @group px-toggle-design:variables:style
+/// @type Color [default]]
+$inuit-toggle-border--on        : var(--px-toggle-border-color--on, $select-blue-hover) !default;
+
+/// Disabled background color
+/// @group px-toggle-design:variables:style
+/// @type Color [default]
+$inuit-toggle-disabled-background                      : $white !default;
+
+/// Disabled checked background color
+/// @group px-toggle-design:variables:style
+/// @type Color [default]
+$inuit-toggle-checked-disabled-background              : $gray2 !default;
+
+/// Disabled border color
+/// @group px-toggle-design:variables:style
+/// @type Color [default]
+$inuit-toggle-disabled-border-color                    : $gray4 !default;
+
+/// Generates the CSS for small toggles if enabled.
+///
+/// @group px-toggle-design:variables:flag
+/// @type Boolean [default]
+$inuit-enable-toggle--small     : false !default;
+
+/// Generates the CSS for large toggles if enabled.
+///
+/// @group px-toggle-design:variables:flag
+/// @type Boolean [default]
+$inuit-enable-toggle--large     : false !default;
+
+/// Generates the CSS for huge toggles if enabled.
+///
+/// @group px-toggle-design:variables:flag
+/// @type Boolean [default]
+$inuit-enable-toggle--huge      : false !default;
+
+/// Generates the CSS for disabled toggles if enabled.
+///
+/// @group px-toggle-design:variables:flag
+/// @type Boolean [default]
+$inuit-enable-toggle--disabled   : false !default;
+
+/**
+ * Default toggle
+ */
+
+.#{$inuit-toggle-namespace}toggle__input,
+%#{$inuit-toggle-namespace}toggle__input {
+  @include accessibility;
+  &:checked + {
+    .#{$inuit-toggle-namespace}toggle__label,
+    %#{$inuit-toggle-namespace}toggle__label {
+      background-color: $inuit-toggle-border--on;
+      &:before {
+        background-color: $inuit-toggle-background--on;
+      }
+      &:after {
+        margin-left: $inuit-base-spacing-unit--huge;
+      }
+    }
+  }
+}
+
+.#{$inuit-toggle-namespace}toggle__label,
+%#{$inuit-toggle-namespace}toggle__label {
+  position: relative;
+  display: block;
+  width: $inuit-base-spacing-unit--huge * 2;
+  min-width: $inuit-base-spacing-unit--huge * 2;
+  height: $inuit-base-spacing-unit--huge;
+  border-radius: $inuit-base-spacing-unit--huge;
+  padding: 1px;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  transition: background .4s;
+  background-color: $inuit-toggle-border;
+  text-indent: -9999rem;
+  &:before, &:after {
+    position: absolute;
+    display: block;
+    content: "";
+  }
+  &:before {
+    top: 1px;
+    right: 1px;
+    bottom: 1px;
+    left: 1px;
+    border-radius: $inuit-base-spacing-unit--huge;
+    transition: background .4s;
+    background-color: $inuit-toggle-background;
+  }
+  &:after {
+    top: 3px;
+    bottom: 3px;
+    left: 3px;
+    width: calc(#{$inuit-base-spacing-unit--huge} - 6px);
+    border: 1px solid $inuit-toggle-switch-border;
+    border-radius: calc(#{$inuit-base-spacing-unit--huge} - 6px);
+    box-shadow: $inuit-toggle-switch-shadow;
+    background-color: $inuit-toggle-switch;
+    transition: margin .4s, background .4s;
+  }
+}
+
+/// Disabled toggle
+@if ($inuit-enable-toggle--disabled == true) {
+
+  .#{$inuit-toggle-namespace}toggle__input,
+  %#{$inuit-toggle-namespace}toggle__input {
+    &:checked + {
+      .#{$inuit-toggle-namespace}toggle--disabled,
+      %#{$inuit-toggle-namespace}toggle--disabled
+      .toggle__label[disabled] {
+        background-color: var(--px-toggle-checked-disabled-background, $inuit-toggle-checked-disabled-background);
+        &:before {
+          //checked background
+          background-color: var(--px-toggle-checked-disabled-background, $inuit-toggle-checked-disabled-background);
+        }
+        &:after {
+          box-shadow: none;
+        }
+      }
+    }
+  }
+
+  .#{$inuit-toggle-namespace}toggle--disabled,
+  %#{$inuit-toggle-namespace}toggle--disabled,
+  .toggle__label[disabled] {
+    background-color: var(--px-toggle-disabled-border-color, $inuit-toggle-disabled-border-color) !important;
+    pointer-events: none;
+    &:before {
+      background-color: var(--px-toggle-disabled-background, $inuit-toggle-disabled-background);
+      box-shadow: none;
+    }
+    &:after {
+      box-shadow: none;
+      border: 1px solid var(--px-toggle-disabled-border-color, $inuit-toggle-disabled-border-color);
+    }
+  }
+}
+
+@if ($inuit-enable-toggle--small == true) {
+
+  /**
+   * Small toggle
+   */
+
+  .#{$inuit-toggle-namespace}toggle__input--small,
+  %#{$inuit-toggle-namespace}toggle__input--small {
+    &:checked + {
+      .#{$inuit-toggle-namespace}toggle__label--small,
+      %#{$inuit-toggle-namespace}toggle__label--small {
+        &:after {
+          margin-left: $inuit-base-spacing-unit--large;
+        }
+      }
+    }
+  }
+
+  .#{$inuit-toggle-namespace}toggle__label--small,
+  %#{$inuit-toggle-namespace}toggle__label--small {
+    width: $inuit-base-spacing-unit--large * 2;
+    min-width: $inuit-base-spacing-unit--large * 2;
+    height: $inuit-base-spacing-unit--large;
+    border-radius: $inuit-base-spacing-unit--large;
+    &:before {
+      border-radius: $inuit-base-spacing-unit--large;
+    }
+    &:after {
+      top: 2px;
+      bottom: 2px;
+      left: 2px;
+      width: calc(#{$inuit-base-spacing-unit--large} - 4px);
+      border-radius: calc(#{$inuit-base-spacing-unit--large} - 4px);
+    }
+  }
+
+}
+
+
+
+@if ($inuit-enable-toggle--large == true) {
+
+  /**
+   * Large toggle
+   */
+
+  .#{$inuit-toggle-namespace}toggle__input--large,
+  %#{$inuit-toggle-namespace}toggle__input--large {
+    &:checked + {
+      .#{$inuit-toggle-namespace}toggle__label--large,
+      %#{$inuit-toggle-namespace}toggle__label--large {
+        &:after {
+          margin-left: $inuit-base-spacing-unit--large * 2;
+        }
+      }
+    }
+  }
+
+  .#{$inuit-toggle-namespace}toggle__label--large,
+  %#{$inuit-toggle-namespace}toggle__label--large {
+    width: $inuit-base-spacing-unit--large * 4;
+    min-width: $inuit-base-spacing-unit--large * 4;
+    height: $inuit-base-spacing-unit--large * 2;
+    border-radius: $inuit-base-spacing-unit--large * 2;
+    &:before {
+      border-radius: $inuit-base-spacing-unit--large * 2;
+    }
+    &:after {
+      top: calculateRem(4px);
+      bottom: calculateRem(4px);
+      left: calculateRem(4px);
+      width: calc(#{$inuit-base-spacing-unit--large * 2} - #{calculateRem(8px)});
+      border-radius: calc(#{$inuit-base-spacing-unit--large * 2} - #{calculateRem(8px)});
+    }
+  }
+
+}
+
+
+
+@if ($inuit-enable-toggle--huge == true) {
+
+  /**
+   * Huge toggle
+   */
+
+  .#{$inuit-toggle-namespace}toggle__input--huge,
+  %#{$inuit-toggle-namespace}toggle__input--huge {
+    &:checked + {
+      .#{$inuit-toggle-namespace}toggle__label--huge,
+      %#{$inuit-toggle-namespace}toggle__label--huge {
+        &:after {
+          margin-left: $inuit-base-spacing-unit--huge * 2;
+        }
+      }
+    }
+  }
+
+  .#{$inuit-toggle-namespace}toggle__label--huge,
+  %#{$inuit-toggle-namespace}toggle__label--huge {
+    width: $inuit-base-spacing-unit--huge * 4;
+    min-width: $inuit-base-spacing-unit--huge * 4;
+    height: $inuit-base-spacing-unit--huge * 2;
+    border-radius: $inuit-base-spacing-unit--huge * 2;
+    &:before {
+      border-radius: $inuit-base-spacing-unit--huge * 2;
+    }
+    &:after {
+      top: $inuit-base-spacing-unit--tiny;
+      bottom: $inuit-base-spacing-unit--tiny;
+      left: $inuit-base-spacing-unit--tiny;
+      width: calc(#{$inuit-base-spacing-unit--huge * 2} - #{$inuit-base-spacing-unit--small});
+      border-radius: calc(#{$inuit-base-spacing-unit--huge * 2} - #{$inuit-base-spacing-unit--small});
+    }
+  }
+
+}

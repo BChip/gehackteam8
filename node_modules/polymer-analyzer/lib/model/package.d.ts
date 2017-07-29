@@ -1,0 +1,46 @@
+/**
+ * @license
+ * Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+ * This code may only be used under the BSD style license found at
+ * http://polymer.github.io/LICENSE.txt
+ * The complete set of authors may be found at
+ * http://polymer.github.io/AUTHORS.txt
+ * The complete set of contributors may be found at
+ * http://polymer.github.io/CONTRIBUTORS.txt
+ * Code distributed by Google as part of the polymer project is also
+ * subject to an additional IP rights grant found at
+ * http://polymer.github.io/PATENTS.txt
+ */
+import { Document, FeatureKinds } from './document';
+import { Feature } from './feature';
+import { BaseQueryOptions, Queryable } from './queryable';
+import { Warning } from './warning';
+export declare type QueryOptions = object & BaseQueryOptions;
+/**
+ * Represents a queryable interface over all documents in a package/project.
+ *
+ * Results of queries will include results from all documents in the package, as
+ * well as from external dependencies that are transitively imported by
+ * documents in the package.
+ */
+export declare class Package implements Queryable {
+    private _documents;
+    private _toplevelWarnings;
+    static isExternal(path: string): boolean;
+    constructor(documents: Iterable<Document>, warnings: Warning[]);
+    getByKind<K extends keyof FeatureKinds>(kind: K, options?: QueryOptions): Set<FeatureKinds[K]>;
+    getByKind(kind: string, options?: QueryOptions): Set<Feature>;
+    getById<K extends keyof FeatureKinds>(kind: K, identifier: string, options?: QueryOptions): Set<FeatureKinds[K]>;
+    getById(kind: string, identifier: string, options?: QueryOptions): Set<Feature>;
+    getOnlyAtId<K extends keyof FeatureKinds>(kind: K, identifier: string, options?: QueryOptions): FeatureKinds[K] | undefined;
+    getOnlyAtId(kind: string, identifier: string, options?: QueryOptions): Feature | undefined;
+    /**
+     * Get all features for all documents in the project or their imports.
+     */
+    getFeatures(options?: QueryOptions): Set<Feature>;
+    /**
+     * Get all warnings in the project.
+     */
+    getWarnings(options?: QueryOptions): Warning[];
+    private _getDocumentQueryOptions(options?);
+}
