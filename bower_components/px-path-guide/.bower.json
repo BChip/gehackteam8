@@ -1,0 +1,38 @@
+{
+  "name": "px-path-guide",
+  "version": "0.0.2",
+  "description": "Polymer component to visually represent a sequence of steps and associated progress details.",
+  "main": "px-path-guide.html",
+  "ignore": [
+    ".*",
+    "npm-debug.log",
+    "gulpfile.js",
+    "sass",
+    "bower_components",
+    "node_modules",
+    "test",
+    "OSS_Notice.pdf",
+    "scripts",
+    ".github",
+    "px-path-guide.png"
+  ],
+  "dependencies": {
+    "polymer": "^1.6.1",
+    "iron-icon": "^1.0.12",
+    "px-polymer-font-awesome": "^1.1.0"
+  },
+  "devDependencies": {
+    "px-starter-kit-design": "^0.7.0",
+    "px-demo": "^1.4.6"
+  },
+  "homepage": "https://github.com/gedesigntech/px-path-guide",
+  "_release": "0.0.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.2",
+    "commit": "5b6d23dad6ad568a71c5c210772c2a44d2f214dd"
+  },
+  "_source": "https://github.com/gedesigntech/px-path-guide.git",
+  "_target": "^0.0.2",
+  "_originalSource": "px-path-guide"
+}

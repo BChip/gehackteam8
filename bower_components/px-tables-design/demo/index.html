@@ -1,0 +1,184 @@
+<!-- Common imports -->
+<link rel="import" href="../../polymer/polymer.html" />
+
+<!-- Common demo imports -->
+<link rel="import" href="../../px-sass-doc/px-sass-doc.html" />
+<link rel="import" href="../css/px-tables-design-demo-styles.html" />
+
+<!-- Demo DOM module -->
+<dom-module id="local-element-demo">
+  <template>
+    <!-- 0: Import the styles-->
+    <style include="px-tables-design-demo-styles" is="custom-style"></style>
+
+<!-- 1: Describe Module -->
+<px-sass-doc
+  module-name="px-tables-design"
+  description="Predix UI has some useful helpers for common <table> patterns."
+  layer="base"
+  sassdoc-path="sassdoc.json"
+  dependencies='[
+    "https://github.com/PredixDev/px-colors-design",
+    "https://github.com/PredixDev/px-defaults-design"
+  ]'
+  selected-options="{{selectedOptions}}">
+
+<!-- 2: Set Options -->
+<px-sass-doc-option
+  option-name="Padding"
+  choose-with="dropdown"
+  choices='[
+    "small",
+    "regular (default)",
+    "large"
+  ]'
+  default-choice="regular (default)">
+</px-sass-doc-option>
+
+<px-sass-doc-option
+  option-name="Widths"
+  choose-with="dropdown"
+  choices='[
+    "variable (default)",
+    "fixed"
+  ]'
+  default-choice="regular (default)">
+</px-sass-doc-option>
+
+<px-sass-doc-option
+  option-name="Borders"
+  choose-with="dropdown"
+  choices='[
+    "all (default)",
+    "rows",
+    "columns",
+    "none"
+  ]'
+  default-choice="all (default)">
+</px-sass-doc-option>
+
+<!-- 3: Make HTML Demo -->
+<section data-slot="demoHTML">
+<table class$="{{tableClasses}}">
+  <tbody>
+    <tr>
+      <th>Table heading</th>
+      <th>Table heading</th>
+      <th>Table heading</th>
+      <th>Table heading</th>
+    </tr>
+    <tr>
+      <td>Table cell</td>
+      <td>Table cell wide</td>
+      <td>Table cell wide wide</td>
+      <td>Table cell wide wide wide</td>
+    </tr>
+    <tr>
+      <td>Table cell</td>
+      <td>Table cell</td>
+      <td>Table cell</td>
+      <td>Table cell</td>
+    </tr>
+  </tbody>
+</table>
+</section>
+
+<!-- 4: Set Import Slot -->
+<section data-slot="import">
+{{importCode}}
+</section>
+
+<!-- 5: Set Usage HTML -->
+<section data-slot="usage">
+```
+<!-- Default table -->
+<table class="table"></table>
+
+
+<!-- Table Fixed -->
+<!-- Table with fixed column widths -->
+<table class="table table--fixed"></table>
+
+
+<!-- Table Small -->
+<!-- Table with small padding / tightly packed cells -->
+<table class="table table--small"></table>
+
+
+<!-- Table Large -->
+<!-- Table with large padding / widely spaced cells -->
+<table class="table table--large"></table>
+
+
+<!-- Table Rows -->
+<!-- Table with no column borders, just row borders -->
+<table class="table table--rows"></table>
+
+
+<!-- Table Columns -->
+<!-- Table with no row broders, just column borders -->
+<table class="table table--columns"></table>
+
+
+<!-- Table No Cells -->
+<!-- Table with no borders at all -->
+<table class="table table--no-cells"></table>
+```
+</section>
+
+</px-sass-doc>
+</template>
+
+</dom-module>
+
+<!-- 6: Handle selectedOptions, update demo -->
+<script>
+  Polymer({
+    is: 'local-element-demo',
+
+    attached : function(){
+      var boundHandler = this._handleOptionsUpdated.bind(this);
+      this.addEventListener('px-sass-doc-options-updated', boundHandler)
+    },
+
+    detached : function(){
+      this.removeEventListener('px-sass-doc-options-updated', boundHandler);
+    },
+
+    _handleOptionsUpdated : function(evt) {
+      //call functions created below
+      this.tableClasses = this._tableClasses();
+      this.importCode = this._importCode();
+
+      // Wait, then tell the highlighter to run after dom-if restamps
+      this.async(function(){ this.fire('px-sass-doc-demo-updated', {}) }, 10);
+    },
+
+    _tableClasses : function() {
+      var opts = this.selectedOptions || {}, strings = [];
+
+      if (opts.Padding === "small")    strings.push("table--small");
+      if (opts.Padding === "large")    strings.push("table--large");
+      if (opts.Widths === "fixed")     strings.push("table--fixed");
+      if (opts.Borders === "rows")     strings.push("table--rows");
+      if (opts.Borders === "columns")  strings.push("table--columns");
+      if (opts.Borders === "none")     strings.push("table--no-cells");
+
+      return ("table " + strings.join(" ")).trim();
+    },
+
+    _importCode : function() {
+      var opts = this.selectedOptions || {}, strings = [];
+
+      if (opts.Padding === "small")    strings.push("$inuit-enable-table--small : true;");
+      if (opts.Padding === "large")    strings.push("$inuit-enable-table--large : true;");
+      if (opts.Widths === "fixed")     strings.push("$inuit-enable-table--fixed : true;");
+      if (opts.Borders === "rows")     strings.push("$inuit-enable-table--rows : true;");
+      if (opts.Borders === "columns")  strings.push("$inuit-enable-table--columns : true;");
+      if (opts.Borders === "none")     strings.push("$inuit-enable-table--no-cells : true;");
+
+      return (strings.join("\n") + "\n@import 'px-tables-design/_base.tables.scss';").trim();
+    },
+
+  });
+</script>

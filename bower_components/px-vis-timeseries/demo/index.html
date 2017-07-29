@@ -1,0 +1,742 @@
+<!-- Common imports -->
+<link rel="import" href="../../polymer/polymer.html" />
+<link rel="import" href="../../px-polymer-font-awesome/polymer-font-awesome.html" />
+
+<!-- Common demo imports -->
+<link rel="import" href="../../px-demo/px-demo-header.html" />
+<link rel="import" href="../../px-demo/px-demo-api-viewer.html" />
+<link rel="import" href="../../px-demo/px-demo-footer.html" />
+<link rel="import" href="../../px-demo/px-demo-configs.html" />
+<link rel="import" href="../../px-demo/px-demo-props.html" />
+<link rel="import" href="../../px-demo/px-demo-interactive.html" />
+<link rel="import" href="../../px-demo/px-demo-component-snippet.html" />
+<link rel="import" href="../../px-demo/px-demo-code-editor.html" />
+<link rel="import" href="../../px-demo/css/px-demo-styles.html" />
+
+<!-- Imports for this componnent -->
+<link rel="import" href="../../px-colors-design/colors.html" />
+<!-- <link rel="import" href="../../px-vis/px-vis-behavior-common.html" />
+<link rel="import" href="../../px-vis/px-vis-behavior-d3.html" />
+<link rel="import" href="../../px-vis/px-vis-behavior-chart.html" />
+<link rel="import" href="../../px-vis/px-vis-behavior-datetime.html" /> -->
+<link rel="import" href="../px-vis-timeseries.html"/>
+
+<!-- Demo DOM module -->
+<dom-module id="local-element-demo">
+  <template>
+    <style include="px-demo-styles" is="custom-style"></style>
+
+    <!-- Header -->
+    <px-demo-header
+        module-name="px-vis-timeseries"
+        description="	The	px-vis-timeseries component creates a timeseries chart. With timeseries, you can create line and scatter timeseries charts complete with user interaction, events, thresholds, and a navigator. The chart is built off px-vis components which utilize d3.js 4.0+.">
+    </px-demo-header>
+
+    <!-- Interactive -->
+    <px-demo-interactive>
+      <!-- Configs -->
+      <px-demo-configs configs="[[configs]]" props="{{props}}" chosen-config="{{chosenConfig}}"></px-demo-configs>
+
+      <!-- Props -->
+      <px-demo-props props="{{props}}" config="[[chosenConfig]]"></px-demo-props>
+
+      <!-- Code Editor -->
+      <px-demo-code-editor props="{{props}}"></px-demo-code-editor>
+
+      <!-- Component ---------------------------------------------------------->
+      <px-demo-component class="flex__item flex" style="width:100%">
+        <div class="flex--column flex__item" style="width:100%;">
+        <px-vis-timeseries
+          id="chart"
+          prevent-resize
+          chart-data="{{props.chartData.value}}"
+          include-all-series="{{props.includeAllSeries.value}}"
+          width="{{props.width.value}}"
+          height="{{props.height.value}}"
+          chart-horizontal-alignment="{{props.chartHorizontalAlignment.value}}"
+          chart-vertical-alignment="{{props.chartVerticalAlignment.value}}"
+          margin='{{props.margin.value}}'
+          x-axis-config='{{props.xAxisConfig.value}}'
+          y-axis-config='{{props.yAxisConfig.value}}'
+          register-config='{{props.registerConfig.value}}'
+          tooltip-config='{{props.tooltipConfig.value}}'
+          show-tooltip='{{props.showTooltip.value}}'
+          hide-register='{{props.hideRegister.value}}'
+          hide-gridlines-x='{{props.hideGridlinesX.value}}'
+          hide-gridlines-y='{{props.hideGridlinesY.value}}'
+          series-config='{{props.seriesConfig.value}}'
+          dynamic-menu-config='{{props.dynamicMenuConfig.value}}'
+          show-tooltip="{{props.showTooltip.value}}"
+          event-config='{{props.eventConfig.value}}'
+          event-data="{{props.eventData.value}}"
+          threshold-config='{{props.thresholdConfig.value}}'
+          threshold-data="{{props.thresholdData.value}}"
+          display-threshold-title="{{props.displayThresholdTitle.value}}"
+          chart-extents='{{props.chartExtents.value}}'
+          toolbar-config="{{props.toolbarConfig.value}}"
+          match-ticks="{{props.matchTicks.value}}"
+          selection-type="{{props.selectionType.value}}"
+          render-to-canvas="{{props.renderToCanvas.value}}"
+          progressive-rendering-points-per-frame="{{props.progressiveRenderingPointsPerFrame.value}}"
+          progressive-rendering-minimum-frames="{{props.progressiveRenderingMinFrames.value}}"
+          no-canvas-progressive-rendering="{{props.noCanvasProgressiveRendering.value}}"
+          debounce-resize-timing="{{props.debounceResizeTiming.value}}">
+        </px-vis-timeseries>
+      </div>
+      </px-demo-component>
+      <!-- END Component ------------------------------------------------------>
+
+      <px-demo-component-snippet
+          element-properties="{{props}}"
+          element-name="px-vis-timeseries"
+          links-includes="[[linksIncludes]]"
+          scripts-includes="[[scriptsIncludes]]"
+          polygit-includes="[[polygitIncludes]]">
+      </px-demo-component-snippet>
+    </px-demo-interactive>
+
+    <!-- API Viewer -->
+    <px-demo-api-viewer
+      source="px-vis-timeseries"
+      hide="[[apiHide]]"
+      mark-private="[[apiMarkPrivate]]"
+      mark-read-only="[[apliMarkReadOnly]]"
+      change-description="[[apiChangeDescription]]">
+    </px-demo-api-viewer>
+
+    <!-- Footer -->
+    <px-demo-footer></px-demo-footer>
+
+  </template>
+
+</dom-module>
+<script>
+  Polymer({
+    is: 'local-element-demo',
+
+    properties: {
+
+      /**
+       * Note: The actual data/values for `props` are placed in `this.demoProps`
+       * to create a static reference that Polymer shouldn't overwrite.
+       *
+       * On object containing all the properties the user can configure for this
+       * demo. Usually a pretty similar copy of the component's `properties` block
+       * with some additional sugar added to describe what kind of input the
+       * user will be shown and how that input should be configured.
+       *
+       * Note that `value` for each property is the default that will be set
+       * unless a config from `configs` is applied by default.
+       *
+       * @example
+       *
+       * `demoProps` is an object containing multipe objects. Each sub-object has
+       * should have a key with the name of the configurable property, and a set
+       * of values that describe that property. At a high level, you might have:
+       *
+       * ```
+       *     {
+       *       preventRangeSelection: { ... },
+       *       displayMode: { ... },
+       *       blockDatesBefore: { ... }
+       *     }
+       * ```
+       *
+       * Each sub-object should contain information about the configurable property's
+       * `type` (a reference to the JavaScript literal), a default value, and a set
+       * of additional keys that describe the input it can be changed with.
+       * The following inputs types are currently available:
+       *
+       * - 'toggle' - A toggle switch input to set Boolean values
+       * - 'text' - A simple single-line text input to set String or stringified Array/Object values
+       * - 'dropdown' - A dropdown picker that can be used to select any kind of value from a list of available options
+       *
+       * Full examples for each input:
+       *
+       * ```
+       *     {
+       *       preventRangeSelection: {
+       *         type: Boolean,
+       *         value: false,
+       *         inputType: 'toggle'
+       *       },
+       *       displayMode: {
+       *         type: String,
+       *         value: 'day',
+       *         inputType: 'dropdown',
+       *         inputChoices: ['day', 'month', 'year']
+       *       },
+       *       blockDatesBefore: {
+       *         type: String,
+       *         value: '2016-10-10T00:00:00.000Z',
+       *         inputType: 'text',
+       *         inputPlaceholder: 'ISO 8601 String'
+       *       }
+       *     }
+       * ```
+       *
+       * By default, the configurable property names are converted from camelCase
+       * to Title Case and used as input labels (e.g. 'displayMode' -> 'Display Mode').
+       * Labels can be set manually through the key `inputLabel`:
+       *
+       * ```
+       *     {
+       *       preventRangeSelection: {
+       *         type: Boolean,
+       *         value: false,
+       *         inputType: 'toggle',
+       *         inputLabel: "Stop range selection"
+       *       }
+       *     }
+       * ```
+       *
+       * @property demoProps
+       * @type {Object}
+       */
+      props: {
+        type: Object,
+        value: function(){ return this.demoProps; }
+      },
+
+      /**
+       * An array of pre-configured `props` that can be used to provide the user
+       * with a set of common examples. These configs will be made available
+       * as a set of tabs the user can click that will automatically change
+       * the `props` to specific values.
+       *
+       * @example
+       *
+       * Each config is an object. Its keys should be the names of the configurable
+       * properties defined in your `demoProps` above. Each key's value should
+       * be the new prop value for the configuration. You can also include these
+       * optional keys:
+       *
+       * - `configName` - a String value that will be used for the title of the tab
+       * - `configReset` - a Boolean, if `true` resets all props (even those not specified in the config) when this config is selected. Defaults to `false`.
+       *
+       * Example of two configs:
+       *
+       * ```
+       *     [
+       *       {
+       *         configName: "Basic",
+       *         preventRangeSelection: true,
+       *         displayMode: 'year',
+       *         blockDatesBefore: '2016-10-10T00:00:00.000Z'
+       *       },
+       *       {
+       *         configName: "Advanced",
+       *         preventRangeSelection: false,
+       *         displayMode: 'day',
+       *         blockDatesBefore: '2010-10-10T00:00:00.000Z'
+       *       }
+       *     ]
+       * ```
+       *
+       * @property demoProps
+       * @type {Array}
+       */
+      configs: {
+        type: Array,
+        value: function(){
+          return [
+            { configName: "Default"}
+          ]
+        }
+      },
+
+      apiHide: {
+        type: Array,
+        value: function() {
+          return [
+            "defaultEventConfig",
+            "displayThresholdTitle",
+            "generateLayers",
+            "lineConfig",
+            "numberOfLayers",
+            "offset",
+            "seriesKey",
+            "svg",
+            "svgLower",
+            "addClipPath",
+            "cloneSVGElem",
+            "generateRandomID",
+            "yAxisType"
+          ]
+        }
+      },
+      apiMarkPrivate: {
+        type: Array,
+        value: function() {
+          return [
+            "clipPath",
+            "completeSeriesConfig",
+            "dataExtents",
+            "domainChanged",
+            "layer",
+            "pxSvgElem",
+            "pxSvgElemLower",
+            "seriesClipPath"
+          ]
+        }
+      },
+      apliMarkReadOnly: {
+        type: Array,
+        value: function() {
+          return [
+            "axes",
+            "canvasContext",
+            "drawnTickValues",
+            "extentsData",
+            "mousePosition",
+            "seriesToAxes",
+            "tooltipData",
+            "x",
+            "y",
+            "numLeftAxes",
+            "numRightAxes",
+            "leftAxisSize",
+            "rightAxisSize",
+            "zoomStack"
+          ]
+        }
+      },
+      apiChangeDescription: {
+        type: Array,
+        value: function() {
+          return [{
+            "name": "xAxisType",
+            "desc": "Sets the type of data for the x values\n\nValid entries are:\n\n* `time`: for time domains in UTC [default].\n\n* `timeLocal`: for local time domains."
+          }]
+        }
+      },
+
+      scriptsIncludes: {
+        type: Array,
+        value: function() {
+          return ['https://cdn.rawgit.com/foretagsplatsen/numbro/1.7.1/numbro.js'];
+        }
+      },
+
+      linksIncludes: {
+        type: Array,
+        value: function() {
+          return ['px-vis/px-polygit-imports-vis.html', 'px-datetime-common/px-polygit-imports-datetime.html'];
+        }
+      },
+
+      polygitIncludes: {
+        type: Array,
+        value: function() {
+          return ['numbro*+MeTaNoV+*'];
+        }
+      },
+      appliedWidth: {
+        type: Number,
+        defaultValue: 700
+      },
+
+      appliedHeight: {
+        type: Number,
+        defaultValue: 500
+      },
+    },
+
+    /**
+     * A reference for `this.props`. Read the documentation there.
+     */
+    demoProps: {
+
+
+      preventResize: {
+        type: Boolean,
+        defaultValue: true,
+        inputType: 'toggle'
+      },
+
+      debounceResizeTiming: {
+        type: Number,
+        defaultValue: 250,
+        inputType: 'text'
+      },
+
+      //we need inputDisabled: false to be able to dynamically turn it on
+      width: {
+        type: Number,
+        defaultValue: 700,
+        inputDisabled: false,
+        inputType: 'text'
+      },
+
+      //we need inputDisabled: false to be able to dynamically turn it on
+      height: {
+        type: Number,
+        defaultValue: 450,
+        inputDisabled: false,
+        inputType: 'text'
+      },
+
+      renderToCanvas: {
+        type: Boolean,
+        defaultValue: false,
+        inputType: 'toggle'
+      },
+
+      //we need inputDisabled: false to be able to dynamically turn it on
+      noCanvasProgressiveRendering: {
+        type: Boolean,
+        defaultValue: false,
+        inputDisabled: true,
+        inputType: 'toggle'
+      },
+
+      progressiveRenderingPointsPerFrame: {
+        type: Number,
+        defaultValue: 16000,
+        inputDisabled: true,
+        inputType: 'text'
+      },
+
+      progressiveRenderingMinFrames: {
+        type: Number,
+        defaultValue: 1,
+        inputDisabled: true,
+        inputType: 'text'
+      },
+
+      chartHorizontalAlignment: {
+        type: String,
+        defaultValue: 'center',
+        inputType: 'dropdown',
+        inputChoices: ['left', 'center', 'right']
+      },
+
+      chartVerticalAlignment: {
+        type: String,
+        defaultValue: 'center',
+        inputType: 'dropdown',
+        inputChoices: ['top', 'center', 'bottom']
+      },
+
+      margin: {
+        type: Object,
+        defaultValue: { "top": 30, "bottom": 60, "left": 65, "right": 65 },
+        inputType: 'code:JSON'
+      },
+
+      showTooltip: {
+        type: Boolean,
+        defaultValue: false,
+        inputType: 'toggle'
+      },
+
+      tooltipConfig: {
+        type: Object,
+        defaultValue: {},
+        inputType: 'code:JSON'
+      },
+
+      hideRegister: {
+        type: Boolean,
+        defaultValue: false,
+        inputType: 'toggle'
+      },
+
+      registerConfig: {
+        type: Object,
+        defaultValue: { "type": "vertical", "width": 200},
+        inputType: 'code:JSON'
+      },
+
+      includeAllSeries: {
+        type: Boolean,
+        defaultValue: false,
+        inputType: 'toggle'
+      },
+
+      selectionType: {
+        type: String,
+        defaultValue: 'xy',
+        inputType: 'dropdown',
+        inputChoices: ['xy', 'xAxis', 'yAxis']
+      },
+
+      chartData: {
+        type: Array,
+        defaultValue: [{"x":1397102460000,"y0":11.4403,"y1":96.5,"y2":0.56,"y3":0.56},
+                      {"x":1397139660000,"y0":13.1913,"y1":96.5,"y2":0.4,"y3":0.4},
+                      {"x":1397177400000,"y0":12.8485,"y1":96.5,"y2":0.43,"y3":0.43},
+                      {"x":1397228040000,"y0":10.975,"y1":96.5,"y2":0.33,"y3":0.33},
+                      {"x":1397248260000,"y0":12.9377,"y1":96.5,"y2":0.47,"y3":0.47},
+                      {"x":1397291280000,"y0":13.3795,"y1":96.5,"y2":0.41,"y3":0.41},
+                      {"x":1397522940000,"y0":16.4446,"y1":96.5,"y2":0.32,"y3":0.32},
+                      {"x":1397542800000,"y0":12.2771,"y1":96.5,"y2":0.35,"y3":0.35},
+                      {"x":1397640960000,"y0":13.0709,"y1":96.5,"y2":0.34,"y3":0.34},
+                      {"x":1397663100000,"y1":88.8,"y2":0.28,"y3":0.28},
+                      {"x":1397700000000,"y0":12.6198,"y1":95.2,"y2":0.49,"y3":0.49},
+                      {"x":1397753040000,"y0":11.0486,"y1":96.5,"y2":0.35,"y3":0.35},
+                      {"x":1397772540000,"y0":14.6892,"y1":96.5,"y2":0.21,"y3":0.21},
+                      {"x":1397794860000,"y0":14.3738,"y1":96.5,"y2":0.42,"y3":0.42},
+                      {"x":1397813580000,"y0":10.4259,"y1":76.5,"y2":0.58,"y3":0.58},
+                      {"x":1397890680000,"y0":13.4261,"y1":96.5,"y2":0.37,"y3":0.37},
+                      {"x":1397932020000,"y0":13.0062,"y1":96.5,"y2":0.27,"y3":0.27},
+                      {"x":1397973480000,"y0":14.475,"y1":96.5,"y2":0.35,"y3":0.35},
+                      {"x":1398009240000,"y1":96.5,"y2":0.24,"y3":0.24},
+                      {"x":1398035760000,"y0":15.9555,"y1":96.5},
+                      {"x":1398075840000,"y0":14.535,"y1":16},
+                      {"x":1398102960000,"y0":12.3671,"y1":96.5},
+                      {"x":1398126240000,"y0":12.4245,"y1":96.5},
+                      {"x":1398195060000,"y0":12.0836,"y1":96.5,"y2":0.31,"y3":0.31},
+                      {"x":1398219120000,"y0":15.3137,"y1":96.5,"y2":0.34,"y3":0.34},
+                      {"x":1398239220000,"y0":13.7978,"y1":96.5,"y2":0.32,"y3":0.32},
+                      {"x":1398617940000,"y1":55.4,"y2":0.16,"y3":0.16},
+                      {"x":1398638520000,"y0":15.0664,"y1":85.7,"y2":0.41,"y3":0.41},
+                      {"x":1398691860000,"y0":13.504,"y1":96.5,"y2":0.31,"y3":0.31},
+                      {"x":1398714240000,"y0":13.7263,"y1":96.5,"y2":0.36,"y3":0.36},
+                      {"x":1398807540000,"y0":14.57,"y1":96.5,"y2":0.44,"y3":0.44},
+                      {"x":1398858180000,"y0":13.9641,"y1":96.5,"y2":0.25,"y3":0.25},
+                      {"x":1398879420000,"y0":12.5418,"y1":96.5,"y2":0.42,"y3":0.42},
+                      {"x":1398920880000,"y0":14.8822,"y1":96.5,"y2":0.22,"y3":0.22},
+                      {"x":1398956340000,"y0":15.2676,"y1":96.5,"y2":0.42,"y3":0.42},
+                      {"x":1398995280000,"y1":20.3,"y2":0.16,"y3":0.16}],
+        inputType: 'code:JSON'
+      },
+
+      seriesConfig: {
+        type: Object,
+        defaultValue: {"y0":
+        {"name":"y0","x":"x","y":"y0","yAxisUnit":"F","axis":{"id":"axis1","side":"left","number":"1"}},
+        "y1":{"name":"y1","x":"x","y":"y1","yAxisUnit":"Hz","axis":{"id":"axis2","side":"right","number":"1"}},
+        "y2":{"name":"y2","x":"x","y":"y2","yMin":0.11,"yMax":1.1,"yAxisUnit":"C","axis":{"id":"axis3","side":"left","number":"2"}},
+        "y3":{"name":"y3","x":"x","y":"y3","yAxisUnit":"F","axis":{"id":"axis4","side":"right","number":"2"}}},
+        inputType: 'code:JSON'
+      },
+
+      chartExtents: {
+        type: Object,
+        defaultValue: {
+          "x": ["dynamic","dynamic"],
+          "y": ["dynamic","dynamic"]
+        },
+        inputType: 'code:JSON'
+      },
+
+      eventData: {
+        type: Array,
+        defaultValue: [{"id":"123","time":1398714240000,"label":"Recalibrate"},
+            {"id":"456","time":1397640960000,"label":"Fan start"},
+            {"id":"789","time":1398126240000,"label":"Fan stop"},
+            {"id":"333","time":1398956340000,"label":"Default"}],
+        inputType: 'code:JSON'
+      },
+
+      eventConfig: {
+        type: Object,
+        defaultValue: {
+          "Recalibrate":{
+            "color": "blue",
+            "icon": "fa-camera",
+            "type": "fa",
+            "offset":[0,0],
+            "lineColor": "red",
+            "lineWeight": 0
+          },
+          "Fan start":{
+            "color": "green",
+            "icon": "\uf015",
+            "type": "unicode",
+            "offset":[1,0]
+          },
+          "Fan stop":{
+            "icon": "ge_logo.png",
+            "type": "image",
+            "offset":[0,-20],
+            "size":"20"
+          }
+        },
+        inputType: 'code:JSON'
+      },
+
+      thresholdData: {
+        type: Array,
+        defaultValue: [
+            { "for":"y0", "type":"max", "value":15.4784 },
+            { "for":"y0", "type":"min", "value":7.6531 },
+            { "for":"y0", "type":"mean", "value":15.330657585139331 },
+            { "for":"y1", "type":"mean", "value":75 },
+            { "for":"y1", "type":"quartile", "value":17 }
+          ],
+        inputType: 'code:JSON'
+      },
+
+      displayThresholdTitle: {
+        type: Boolean,
+        defaultValue: true,
+        inputType: 'toggle'
+      },
+
+      thresholdConfig: {
+        type: Object,
+        defaultValue: {
+          "max": {
+            "color": "red",
+            "dashPattern": "5,0",
+            "title": "MAX",
+            "showThresholdBox": true,
+            "displayTitle": true
+          }
+        },
+        inputType: 'code:JSON'
+      },
+
+      matchTicks: {
+        type: Boolean,
+        defaultValue: false,
+        inputType: 'toggle',
+        inputLabel: 'matchTicks [Currently not dynamic]'
+      },
+
+      xAxisConfig: {
+        type: Object,
+        defaultValue: {
+            "title": "Date"
+          },
+        inputType: 'code:JSON'
+      },
+
+      yAxisConfig: {
+        type: Object,
+        defaultValue: {
+            "title": "Single",
+            "titleTruncation": false,
+            "unit": "F",
+            "axis1": {
+              "title": "Temperature",
+              "titleTruncation": false,
+              "unit": "C"
+            }
+          },
+        inputType: 'code:JSON'
+      },
+
+      hideGridlinesX: {
+        type: Boolean,
+        defaultValue: false,
+        inputType: 'toggle'
+      },
+
+      hideGridlinesY: {
+        type: Boolean,
+        defaultValue: false,
+        inputType: 'toggle'
+      },
+
+      dynamicMenuConfig: {
+        type: Array,
+        defaultValue: [
+          {
+            'name': 'Delete',
+            'action': "function(data) {var conf = this.seriesConfig;delete conf[data.additionalDetail.name];this.set(\"seriesConfig\", {}); this.set(\"seriesConfig\", conf);}",
+            'eventName': 'delete',
+            'icon': 'fa-trash',
+          },
+          {
+            'name': 'Bring To Front',
+            'action': "function(data) {this.set(\"serieToRedrawOnTop\", data.additionalDetail.name);}",
+            'eventName': 'bring-to-front',
+            'icon': 'fa-arrow-up'
+          }
+        ],
+        inputType: 'code:JSON'
+      },
+
+      toolbarConfig: {
+        type: Array,
+        defaultValue:{"config": {
+            "advancedZoom": true,
+            "pan": true,
+            "tooltip": true,
+            "logHover": {
+              "buttonGroup": 2,
+              "tooltipLabel": "The submenu item of this menu will define custom mouse interaction",
+              "icon": "fa-leaf",
+              "subConfig": {
+                "customClick": {
+                  "icon": "fa-coffee",
+                  "buttonGroup": 3,
+                  "tooltipLabel": "define some custom mouse interactions on chart",
+                  "eventName": "my-custom-click",
+                  "actionConfig": {
+                    "mousedown": "function(mousePos) { console.log(\"custom click on chart. Context is the chart. Mouse pos is available: \" + JSON.stringify(mousePos))}",
+                    "mouseup": "function(mousePos) { console.log(\"custom action on mouse up the chart \" + JSON.stringify(mousePos));}",
+                    "mouseout": "function(mousePos) { console.log(\"custom action on mouse out the chart \" + JSON.stringify(mousePos));}",
+                    "mousemove": "function(mousePos) { console.log(\"custom action on hovering the chart \");}"
+                  }
+                },
+                "customClick2": {
+                  "buttonGroup": 3,
+                  "icon": "fa-fire-extinguisher",
+                  "tooltipLabel": "Remove all custom interactions",
+                  "actionConfig": {
+                    "mousedown": null,
+                    "mouseup": null,
+                    "mouseout": null,
+                    "mousemove": null
+                  }
+                }
+              }
+            }
+          }},
+        inputType: 'code:JSON'
+      },
+
+      navigatorConfig: {
+        type: Object,
+        defaultValue: {
+           "xAxisConfig": {
+              "tickFormat": "%b %d"
+           }
+         },
+        inputType: 'code:JSON'
+      },
+
+    },
+
+    observers: [
+      '_preventResizeChanged(props.preventResize.value)',
+      '_appliedWidthChanged(appliedWidth)',
+      '_appliedHeightChanged(appliedHeight)',
+      '_widthChanged(props.width.value)',
+      '_heightChanged(props.height.value)',
+      '_renderToCanvasChanged(props.renderToCanvas.value, props.noCanvasProgressiveRendering.value)'
+    ],
+
+    _preventResizeChanged: function() {
+      this.set('props.width.inputDisabled', !this.props.preventResize.value);
+      this.set('props.height.inputDisabled', !this.props.preventResize.value);
+      this.$.chart.set('preventResize', this.props.preventResize.value);
+    },
+    _widthChanged: function() {
+      if(this.props.preventResize.value) {
+       this.set('appliedWidth', this.props.width.value);
+      }
+    },
+    _heightChanged: function() {
+      if(this.props.preventResize.value) {
+       this.set('appliedHeight', this.props.height.value);
+      }
+    },
+    _appliedWidthChanged: function() {
+      this.set('props.width.value', this.appliedWidth);
+    },
+    _appliedHeightChanged: function() {
+      this.set('props.height.value', this.appliedHeight);
+    },
+    _renderToCanvasChanged: function() {
+      this.set('props.noCanvasProgressiveRendering.inputDisabled', !this.props.renderToCanvas.value);
+
+      this.set('props.progressiveRenderingPointsPerFrame.inputDisabled', !this.props.renderToCanvas.value || this.props.noCanvasProgressiveRendering.value);
+      this.set('props.progressiveRenderingMinFrames.inputDisabled', !this.props.renderToCanvas.value ||this.props.noCanvasProgressiveRendering.value);
+    }
+  });
+</script>

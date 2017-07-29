@@ -1,0 +1,37 @@
+{
+  "name": "px-datetime-field",
+  "version": "0.6.14",
+  "main": [
+    "px-datetime-field.html"
+  ],
+  "ignore": [
+    ".*",
+    "node_modules",
+    "bower_components",
+    "sass",
+    "HISTORY.md",
+    "CONTRIBUTING.md",
+    "OSS_Notice.pdf",
+    "scripts",
+    ".github",
+    ".editorconfig",
+    ".jshintrc",
+    ".gitignore",
+    "LICENSE.md",
+    "gulpfile.js",
+    "monogram-wdmk.png",
+    "README.md",
+    "wct.conf.json",
+    "px-datetime-field.png"
+  ],
+  "dependencies": {
+    "polymer": "^1.6.1",
+    "px-theme": "^2.0.1",
+    "px-datetime-common": "^0.7.0"
+  },
+  "devDependencies": {
+    "px-starter-kit-design": "^0.7.0",
+    "px-demo": "^1.0.2",
+    "px-forms-design": "^1.1.3"
+  }
+}

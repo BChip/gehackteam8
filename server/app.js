@@ -79,8 +79,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 *****************************************************************************/
 
 app.get('/docs', require('./routes/docs')(config));
+app.get('/temp', (req, res) => {
+  res.send(require('./routes/temp'));
+});
 
-if (!config.isUaaConfigured()) { 
+if (!config.isUaaConfigured()) {
   // no restrictions
   app.use(express.static(path.join(__dirname, process.env['base-dir'] ? process.env['base-dir'] : '../public')));
 
@@ -129,8 +132,8 @@ if (!config.isUaaConfigured()) {
   // }
 
   if (config.rmdDatasourceURL && config.rmdDatasourceURL.indexOf('https') === 0) {
-    app.get('/api/datagrid/*', 
-        proxy.addClientTokenMiddleware, 
+    app.get('/api/datagrid/*',
+        proxy.addClientTokenMiddleware,
         proxy.customProxyMiddleware('/api/datagrid', config.rmdDatasourceURL, '/services/experience/datasource/datagrid'));
   }
 
@@ -156,7 +159,7 @@ if (!config.isUaaConfigured()) {
 /*******************************************************
 SET UP MOCK API ROUTES
 *******************************************************/
-// NOTE: these routes are added after the real API routes. 
+// NOTE: these routes are added after the real API routes.
 //  So, if you have configured asset, the real asset API will be used, not the mock API.
 // Import route modules
 var mockAssetRoutes = require('./routes/mock-asset.js')();

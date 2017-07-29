@@ -1,0 +1,225 @@
+<!-- Common imports -->
+<link rel="import" href="../../polymer/polymer.html" />
+<link rel="import" href="../../px-polymer-font-awesome/polymer-font-awesome.html" />
+
+<!-- Common demo imports -->
+<link rel="import" href="../../px-demo/px-demo-header.html" />
+<link rel="import" href="../../px-demo/px-demo-api-viewer.html" />
+<link rel="import" href="../../px-demo/px-demo-footer.html" />
+<link rel="import" href="../../px-demo/px-demo-configs.html" />
+<link rel="import" href="../../px-demo/px-demo-props.html" />
+<link rel="import" href="../../px-demo/px-demo-code-editor.html" />
+<link rel="import" href="../../px-demo/px-demo-interactive.html" />
+<link rel="import" href="../../px-demo/px-demo-component-snippet.html" />
+
+<!-- Imports for this componnent -->
+<link rel="import" href="../../px-demo/css/px-demo-styles.html" />
+<link rel="import" href="../px-path-guide.html" />
+
+<!-- Demo DOM module -->
+<dom-module id="local-element-demo">
+  <template>
+    <style include="px-demo-styles" is="custom-style"></style>
+
+    <!-- Header -->
+    <px-demo-header module-name="px-path-guide"
+     description="A Polymer component for visually representing a sequence of steps and any progress made on such.  Customizable icon, geometry and click event.">
+    </px-demo-header>
+
+    <!-- Interactive -->
+    <px-demo-interactive>
+      <!-- Configs -->
+      <px-demo-configs configs="[[configs]]" props="{{props}}" chosen-config="{{chosenConfig}}"></px-demo-configs>
+
+      <!-- Props -->
+      <px-demo-props props="{{props}}" config="[[chosenConfig]]"></px-demo-props>
+
+      <!-- Code Editor -->
+      <px-demo-code-editor props="{{props}}"></px-demo-code-editor>
+
+      <!-- Component ---------------------------------------------------------->
+      <px-demo-component>
+        <style id="px-path-guide-custom-styles">
+        :host {
+
+          /* icon styles */
+          --px-path-guide-icon-size: 16px;
+          --px-path-guide-icon-color: #333;
+          --px-path-guide-icon-top: -8px;
+          --px-path-guide-icon-left: -8px;
+          --px-path-guide-current-icon-size: 24px;
+          --px-path-guide-current-icon-color: #3ab4d4;
+          --px-path-guide-current-icon-top: -12px;
+          --px-path-guide-current-icon-left: -10px;
+
+          /* connector styles */
+          --px-path-guide-connector-color: #333;
+          --px-path-guide-connector-length: 150px;
+
+          /* node/step styles */
+          --px-path-guide-step-diameter: 30px;
+          --px-path-guide-step-radius: 15px;
+          --px-path-guide-step-border-color: #333;
+          --px-path-guide-step-fill-color: #fff;
+          --px-path-guide-step-label-color: #333;
+          --px-path-guide-step-label-font-weight: normal;
+          --px-path-guide-current-step-diameter: 50px;
+          --px-path-guide-current-step-radius: 25px;
+          --px-path-guide-current-step-border-color: #333;
+          --px-path-guide-current-step-fill-color: #fff;
+
+          /* label styles */
+          --px-path-guide-step-label-width: 80px;
+          --px-path-guide-step-label-top: 25px;
+          --px-path-guide-step-label-font-size: 11px;
+          --px-path-guide-current-step-label-color: #333;
+          --px-path-guide-current-step-label-font-weight: bold;
+          --px-path-guide-path-label-margin-right: 20px;
+          --px-path-guide-path-label-color: #333;
+        }
+        </style>
+        <px-path-guide
+          style="display: inline-block; margin-top: 50px; margin-left: 100px;"
+          current-step-icon="{{props.currentStepIcon.value}}"
+          completed-step-icon="{{props.completedStepIcon.value}}"
+          steps="[[props.steps.value]]"
+          path-label="[[props.label.value]]"
+          step-click-event-name="[[props.stepClickEventName.value]]">
+        </px-path-guide>
+        <div style="margin-top: 60px; margin-left: 90px; font-size: 18px;">
+          Click on a step.
+        </div>
+        <template is="dom-if" if="[[clicked]]">
+          <div style="margin-top: 15px; margin-left: 90px; font-size: 18px;">
+            You clicked on step with id [[lastIDClicked]]
+          </div>
+        </template>
+      </px-demo-component>
+      <!-- END Component ------------------------------------------------------>
+
+      <px-demo-component-snippet element-properties="{{props}}" element-name="px-path-guide">
+      </px-demo-component-snippet>
+    </px-demo-interactive>
+
+    <!-- API Viewer -->
+    <px-demo-api-viewer source="px-path-guide"></px-demo-api-viewer>
+
+    <!-- Footer -->
+    <px-demo-footer></px-demo-footer>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'local-element-demo',
+
+    properties: {
+
+      /**
+       * Note: The actual data/values for `props` are placed in `this.demoProps`
+       * to create a static reference that Polymer shouldn't overwrite.
+       *
+       * On object containing all the properties the user can configure for this
+       * demo. Usually a pretty similar copy of the component's `properties` block
+       * with some additional sugar added to describe what kind of input the
+       * user will be shown and how that input should be configured.
+       *
+       * Note that `value` for each property is the default that will be set
+       * unless a config from `configs` is applied by default.
+       *
+       *
+       * @property demoProps
+       * @type {Object}
+       */
+      props: {
+        type: Object,
+        value: function () { return this.demoProps; }
+      },
+
+      /**
+       * An array of pre-configured `props` that can be used to provide the user
+       * with a set of common examples. These configs will be made available
+       * as a set of tabs the user can click that will automatically change
+       * the `props` to specific values.
+       *
+       * @property demoProps
+       * @type {Array}
+       */
+       configs: {
+         type: Array,
+         value: function(){
+           return [
+             { configName: "Default",
+               steps: [
+                 { id: 1, label: "Step 1", completed: true, current: false},
+                 { id: 2, label: "Step 2", completed: true, current: false},
+                 { id: 3, label: "Step 3", completed: false, current: true},
+                 { id: 4, label: "Step 4", completed: false, current: false}
+               ],
+               completedStepIcon: 'fa-check',
+               currentStepIcon: 'fa-circle',
+               stepClickEventName: 'STEP_CLICK'
+             }
+           ]
+         }
+       },
+       clicked: false,
+       lastClickedID: '',
+    },
+
+    /**
+     * A reference for `this.props`. Read the documentation there.
+     */
+    demoProps: {
+      steps: {
+        type: Array,
+        value: [
+          { id: 1, label: "Step 1", completed: true, current: false},
+          { id: 2, label: "Step 2", completed: true, current: false},
+          { id: 3, label: "Step 3", completed: false, current: true},
+          { id: 4, label: "Step 4", completed: false, current: false}
+        ],
+        inputType: 'code:JSON'
+      },
+      completedStepIcon: {
+        type: String,
+        value: 'fa-check',
+        defaultValue: 'fa-check',
+        inputType: 'text',
+        inputPlaceholder: 'fa-'
+      },
+      currentStepIcon: {
+        type: String,
+        value: 'fa-circle',
+        defaultValue: 'fa-circle',
+        inputType: 'text',
+        inputPlaceholder: 'fa-'
+      },
+      stepClickEventName: {
+        type: String,
+        value: 'STEP_CLICK',
+        defaultValue: '',
+        inputType: 'text',
+        inputPlaceholder: 'STEP_CLICK'
+      },
+      label: {
+        type: String,
+        value: 'Path Label',
+        defaultValue: '',
+        inputType: 'text',
+        inputPlaceholder: 'label'
+      }
+    },
+
+    ready: function() {
+      var that = this;
+      window.addEventListener(
+        this.props.stepClickEventName.value,
+        function(event) {
+          that.clicked = true;
+          that.lastIDClicked = event.payload.id;
+        }
+      );
+    }
+  });
+</script>

@@ -1,0 +1,53 @@
+{
+  "name": "px-datetime-range-field",
+  "version": "0.5.11",
+  "main": [
+    "px-datetime-range-field.html"
+  ],
+  "ignore": [
+    ".*",
+    "node_modules",
+    "bower_components",
+    "sass",
+    "HISTORY.md",
+    "CONTRIBUTING.md",
+    "OSS_Notice.pdf",
+    "scripts",
+    ".github",
+    ".editorconfig",
+    ".jshintrc",
+    ".gitignore",
+    "LICENSE.md",
+    "gulpfile.js",
+    "monogram-wdmk.png",
+    "README.md",
+    "wct.conf.json",
+    "px-datetime-range-field.png"
+  ],
+  "dependencies": {
+    "polymer": "^1.6.1",
+    "px-actionable-text-icons-design": "^1.1.0",
+    "px-toggle-design": "^1.1.0",
+    "px-forms-design": "^1.1.0",
+    "px-typography-design": "^1.2.0",
+    "px-headings-design": "^0.3.0",
+    "px-spacing-design": "^0.4.0",
+    "px-datetime-common": "^0.7.0",
+    "px-datetime-field": "^0.6.0",
+    "px-theme": "^2.0.3"
+  },
+  "devDependencies": {
+    "px-starter-kit-design": "^0.7.0",
+    "px-demo": "^1.0.6"
+  },
+  "homepage": "https://github.com/predixDev/px-datetime-range-field",
+  "_release": "0.5.11",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.5.11",
+    "commit": "907ac64835779c249dca9958b7b67bf787f5a097"
+  },
+  "_source": "https://github.com/predixDev/px-datetime-range-field.git",
+  "_target": "^0.5.0",
+  "_originalSource": "px-datetime-range-field"
+}

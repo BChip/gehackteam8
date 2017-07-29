@@ -1,0 +1,244 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../px-polymer-font-awesome/px-polymer-font-awesome.html">
+<link rel="import" href="css/px-path-guide-styles.html">
+
+<!--
+### Description
+
+A Polymer component that visualizes step sequences and progress made on them.
+
+### Usage (Declarative)
+
+#### Minimum :
+
+    <px-path-guide steps="[[steps]]"></px-path-guide>
+
+#### Common:
+
+    <px-path-guide
+      steps="[[steps]]"
+      current-step-icon="fa-circle"
+      completed-step-icon="fa-check">
+    </px-data-table>
+
+#### Complete:
+    <style id="px-path-guide-custom-styles">
+    :host {
+      --px-path-guide-icon-size: 16px;
+      --px-path-guide-icon-color: #333;
+      --px-path-guide-icon-top: -8px;
+      --px-path-guide-icon-left: -8px;
+      --px-path-guide-current-icon-size: 24px;
+      --px-path-guide-current-icon-color: #333;
+      --px-path-guide-current-icon-top: -12px;
+      --px-path-guide-current-icon-left: -10px;
+
+      --px-path-guide-connector-color: #333;
+      --px-path-guide-connector-length: 120px;
+
+      --px-path-guide-step-diameter: 20px;
+      --px-path-guide-step-radius: 10px;
+      --px-path-guide-step-border-color: #333;
+      --px-path-guide-step-fill-color: #fff;
+      --px-path-guide-step-label-color: #333;
+      --px-path-guide-step-label-font-weight: normal;
+
+
+      --px-path-guide-current-step-diameter: 30px;
+      --px-path-guide-current-step-radius: 15px;
+      --px-path-guide-current-step-border-color: #333;
+      --px-path-guide-current-step-fill-color: #fff;
+      --px-path-guide-step-label-width: 70px;
+      --px-path-guide-step-label-top: 30px;
+      --px-path-guide-step-label-font-size: 12px;
+      --px-path-guide-current-step-label-color: #333;
+      --px-path-guide-current-step-label-font-weight: normal;
+      --px-path-guide-path-label-margin-right: 20px;
+      --px-path-guide-path-label-color: #333;
+    }
+    </style>
+    <px-path-guide
+      steps="[[steps]]"
+      current-step-icon="fa-circle"
+      completed-step-icon="fa-check"
+      step-click-event-name="[[stepClickString]]"
+      path-label="Path Label">
+    </px-path-guide>
+
+
+### Attributes
+
+#### __steps__
+
+An array that should contain the steps and the details on each.  It has the following structure as demonstrated by this example:
+
+    steps: [
+        { id: 1, label: "Step 1", completed: true, current: false},
+        { id: 2, label: "Step 2", completed: true, current: false},
+        { id: 3, label: "Step 3", completed: false, current: true},
+        { id: 4, label: "Step 4", completed: false, current: false}
+    ]
+
+In the above structure, for each step object: __"id"__ is a unique identifier, __"label"__ is used as the title
+for the step, __"completed"__ indicates if a step is completed, and __"current"__ identifies the current step.  While there is no restriction
+against having more than one current step, it is more realistic that there is only one current step, and that all steps to previous to the
+current one are completed.  A step is not required to be completed or current; it can be neither.
+In the above example, the first 2 steps are complete, Step 3 is current and Step 4 is neither completed nor the current step.
+
+#### __completed-step-icon__
+
+The name of the font-awesome icon to be placed inside the step node (which is a circle, by default) for a completed step.
+
+#### __current-step-icon__
+
+The name of the font-awesome icon to be placed inside the step shape (circle, by default) for the current step.
+
+#### __step-click-event-name__
+
+The name of the event that will be dispatched from the browser's __window__ object when a step is clicked on.  When such an
+event is dispatched, the Event object will have a __"payload"__ attribute with the following structure:
+
+    Event.payload : {
+      "id" : String
+    }
+
+In the above, __"id"__ will have the matching id attribute (from the __steps__ array) of the step that was clicked on.
+
+
+### Styling
+The following custom properties are available for styling (shown with their corresponding default values):
+
+    --px-path-guide-icon-size: 16px;
+    --px-path-guide-icon-color: #333;
+    --px-path-guide-icon-top: -8px;
+    --px-path-guide-icon-left: -8px;
+    --px-path-guide-current-icon-size: 24px;
+    --px-path-guide-current-icon-color: #333;
+    --px-path-guide-current-icon-top: -12px;
+    --px-path-guide-current-icon-left: -10px;
+
+    --px-path-guide-connector-color: #333;
+    --px-path-guide-connector-length: 120px;
+
+    --px-path-guide-step-diameter: 20px;
+    --px-path-guide-step-radius: 10px;
+    --px-path-guide-step-border-color: #333;
+    --px-path-guide-step-fill-color: #fff;
+    --px-path-guide-step-label-color: #333;
+    --px-path-guide-step-label-font-weight: normal;
+
+
+    --px-path-guide-current-step-diameter: 30px;
+    --px-path-guide-current-step-radius: 15px;
+    --px-path-guide-current-step-border-color: #333;
+    --px-path-guide-current-step-fill-color: #fff;
+    --px-path-guide-current-step-label-color: #333;
+    --px-path-guide-current-step-label-font-weight: normal;
+    --px-path-guide-path-label-margin-right: 20px;
+    --px-path-guide-path-label-color: #333;
+-->
+
+<dom-module id="px-path-guide">
+  <template id="pxPathGuideTemplate">
+    <style include="px-path-guide-styles"></style>
+    <div id="main" draggable="true">
+      <div class="path-label" hidden$="[[!pathLabel]]">[[pathLabel]]</div>
+      <template id="steps" is="dom-repeat" items="[[steps]]">
+        <div id="step-item-[[item.id]]" class="step-connector" on-click="_itemClick">
+          <div class$="step-icon [[_getStepState(item)]]"></div>
+          <iron-icon class$="[[_getStepState(item)]]" icon$="fa:[[_getIcon(item)]]"></iron-icon>
+          <div class$="step-label [[_getStepState(item)]]">[[item.label]]</div>
+        </div>
+      </template>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'px-path-guide',
+      properties: {
+        /**
+          * The font-awesome icon name for a completed step.  If not provided, no icon will be rendered in the nodes for such steps.
+          * font-awesome icon names start with 'fa-' (e.g., 'fa-check', 'fa-asterisk').
+          */
+        completedStepIcon: {
+          type: 'String',
+          value: 'fa-check',
+          reflectToAttribute: true,
+          observer: '_onPropertyChange'
+        },
+        /**
+          * The font-awesome icon name for the current step.  If not provided, no icon will be rendered in the node for such step.
+          */
+        currentStepIcon: {
+          type: 'String',
+          value: 'fa-check',
+          reflectToAttribute: true,
+          observer: '_onPropertyChange'
+        },
+        /**
+          * The array that contains the steps and details of each.  If empty, the whole component is not rendered at all.
+          * The structure should be
+          steps: [ { id: Number, label: String, completed: Boolean, current: Boolean}, ... ]
+          }.  For each step, if 'completed' is true, the icon whose name is in the 'completedStepIcon' property will be placed
+          in the node for the step.  Otherwise if the 'current' is true, the icon whose name is in the 'currentStepIcon' property will be used.
+          If both 'completed' and 'current' are false, then no icon will be shown.
+          For each step, the 'label' attribute is used for the text underneath the corresponding circle.  */
+        steps: {
+          type: Array,
+          observer: '_onPropertyChange'
+        },
+
+        /**
+          * The name of the event that is dispatched from the browser's 'window' object when a step is clicked on.  The event is populated with a
+          * 'payload' object property, with an attribute of 'id' whose value is that of the similarly-named attribute in the corresponding step in
+          * the 'steps' property.  The consumer of this component can then define a listener function (attaching it to the browser window as well)
+          * to process the event in the desired manner.  If this has an undefined or empty value, no event will be dispatched.
+          */
+        stepClickEventName: '',
+
+        /**
+          * Set to a non-empty value to show a label (of the same value) to the left of the path
+          */
+        pathLabel: ''
+      },
+
+      _onPropertyChange: function() {
+        this.$.steps.render();
+        this.updateStyles();
+      },
+
+      _getIcon: function(item) {
+        if (item.completed) {
+          return this.completedStepIcon;
+        }
+        else if (item.current) {
+          return this.currentStepIcon;
+        }
+        return "";
+      },
+
+      _getStepState: function(item) {
+        var classes = '';
+        if (item.current) {
+          classes += 'current';
+        }
+        return classes;
+      },
+
+      _itemClick: function(event) {
+        if (this.stepClickEventName === undefined || this.stepClickEventName === null || this.stepClickEventName === '') {
+          return;
+        }
+        var stepId = event.currentTarget.id.substr(10);
+        var stepClickEvent =
+          new Event(this.stepClickEventName,
+            {"bubbles": true, "cancelable": false}
+          );
+        stepClickEvent.payload = { id : stepId };
+        window.dispatchEvent(stepClickEvent);
+      }
+
+    });
+  </script>
+</dom-module>

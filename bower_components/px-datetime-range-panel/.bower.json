@@ -1,0 +1,48 @@
+{
+  "name": "px-datetime-range-panel",
+  "version": "0.4.14",
+  "main": [
+    "px-datetime-range-panel.html"
+  ],
+  "ignore": [
+    ".*",
+    "node_modules",
+    "bower_components",
+    "sass",
+    "HISTORY.md",
+    "CONTRIBUTING.md",
+    "OSS_Notice.pdf",
+    "scripts",
+    ".github",
+    ".editorconfig",
+    ".jshintrc",
+    ".gitignore",
+    "LICENSE.md",
+    "gulpfile.js",
+    "monogram-wdmk.png",
+    "README.md",
+    "wct.conf.json",
+    "px-datetime-range-panel.png"
+  ],
+  "dependencies": {
+    "polymer": "^1.6.1",
+    "px-theme": "^2.0.1",
+    "px-calendar-picker": "^0.6.0",
+    "px-datetime-common": "^0.7.0",
+    "px-datetime-field": "^0.6.0"
+  },
+  "devDependencies": {
+    "px-starter-kit-design": "^0.7.0",
+    "px-demo": "^1.0.6"
+  },
+  "homepage": "https://github.com/PredixDev/px-datetime-range-panel",
+  "_release": "0.4.14",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.4.14",
+    "commit": "f19672c6941f98f9c15b6357fa4a2798b38cebc1"
+  },
+  "_source": "https://github.com/PredixDev/px-datetime-range-panel.git",
+  "_target": "^0.4.0",
+  "_originalSource": "px-datetime-range-panel"
+}
